@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Three Crowns</title>
+  <meta name="description" content="A medieval deck-building game of three rival kingdoms.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Grenze+Gotisch:wght@600;800&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Pirata+One&family=Uncial+Antiqua&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- The three kingdom backgrounds -->
+  <div class="realms">
+    <div class="realm" data-kingdom="dark"><div class="realm-bg"></div></div>
+    <div class="realm" data-kingdom="mountain"><div class="realm-bg"></div></div>
+    <div class="realm" data-kingdom="snow"><div class="realm-bg"></div></div>
+  </div>
+
+  <!-- Shared SVG filters for the kingdom banners -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <!-- woven cloth grain -->
+      <filter id="fx-cloth" x="-5%" y="-5%" width="110%" height="110%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" seed="3" result="noise"/>
+        <feColorMatrix in="noise" type="saturate" values="0" result="grey"/>
+        <feComponentTransfer in="grey" result="lift">
+          <feFuncR type="linear" slope="0.5" intercept="0.62"/>
+          <feFuncG type="linear" slope="0.5" intercept="0.62"/>
+          <feFuncB type="linear" slope="0.5" intercept="0.62"/>
+          <feFuncA type="linear" slope="0" intercept="1"/>
+        </feComponentTransfer>
+        <feBlend in="SourceGraphic" in2="lift" mode="multiply" result="tex"/>
+        <feComposite in="tex" in2="SourceGraphic" operator="in"/>
+      </filter>
+
+      <!-- warped, blotchy hide -->
+      <filter id="fx-hide" x="-10%" y="-10%" width="120%" height="120%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="3" seed="4" result="warp"/>
+        <feDisplacementMap in="SourceGraphic" in2="warp" scale="6" xChannelSelector="R" yChannelSelector="G" result="shape"/>
+        <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="3" seed="9" result="grain"/>
+        <feColorMatrix in="grain" type="saturate" values="0" result="g"/>
+        <feComponentTransfer in="g" result="lift">
+          <feFuncR type="linear" slope="0.7" intercept="0.45"/>
+          <feFuncG type="linear" slope="0.7" intercept="0.45"/>
+          <feFuncB type="linear" slope="0.7" intercept="0.45"/>
+          <feFuncA type="linear" slope="0" intercept="1"/>
+        </feComponentTransfer>
+        <feBlend in="shape" in2="lift" mode="multiply" result="tex"/>
+        <feComposite in="tex" in2="shape" operator="in"/>
+      </filter>
+
+      <!-- rough painted edges -->
+      <filter id="fx-rough">
+        <feTurbulence type="fractalNoise" baseFrequency="0.09" numOctaves="2" seed="2" result="n"/>
+        <feDisplacementMap in="SourceGraphic" in2="n" scale="4" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+
+      <!-- creeping frost -->
+      <filter id="fx-frost" x="-20%" y="-20%" width="140%" height="140%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.18" numOctaves="3" seed="11" result="n"/>
+        <feDisplacementMap in="SourceGraphic" in2="n" scale="14" xChannelSelector="R" yChannelSelector="G" result="d"/>
+        <feGaussianBlur in="d" stdDeviation="0.6"/>
+      </filter>
+
+      <filter id="fx-blur"><feGaussianBlur stdDeviation="2.5"/></filter>
+
+      <filter id="fx-glow" x="-30%" y="-30%" width="160%" height="160%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="1.4" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+  </svg>
+
+  <!-- Smolder, rain and snow -->
+  <canvas id="particles" aria-hidden="true"></canvas>
+  <div class="fog" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
+
+  <!-- Title (always visible). Each kingdom has its own version that crossfades in. -->
+  <main class="title-screen">
+    <header class="masthead">
+      <h1 class="game-title">
+        <span class="title-face" data-face="default">Three Crowns</span>
+        <span class="title-face" data-face="dark" aria-hidden="true">Three Crowns</span>
+        <span class="title-face" data-face="mountain" aria-hidden="true">Three Crowns</span>
+        <span class="title-face" data-face="snow" aria-hidden="true">Three Crowns</span>
+      </h1>
+      <p class="tagline">Three kingdoms. One throne. Build the deck that claims it.</p>
+      <p class="hint" aria-hidden="true">Choose your kingdom</p>
+    </header>
+  </main>
+
+  <!-- Kingdom plates: each appears inside its own panel on hover -->
+  <div class="plates">
+
+    <!-- ===================== DUSKMOOR ===================== -->
+    <section class="plate" data-kingdom="dark" aria-labelledby="dark-name">
+      <div class="plate-inner">
+        <span class="plate-crest">
+          <svg class="banner-art" viewBox="0 0 120 200" aria-hidden="true">
+            <defs>
+              <linearGradient id="dk-hide" x1="0" y1="0" x2=".3" y2="1">
+                <stop offset="0" stop-color="#9b93a3"/>
+                <stop offset=".55" stop-color="#5e5569"/>
+                <stop offset="1" stop-color="#221a2b"/>
+              </linearGradient>
+              <linearGradient id="dk-bone" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#e6e0ea"/>
+                <stop offset="1" stop-color="#8f8698"/>
+              </linearGradient>
+              <mask id="dk-holes" maskUnits="userSpaceOnUse" x="0" y="0" width="120" height="200">
+                <rect width="120" height="200" fill="#fff"/>
+                <path d="M84 126 q6 -5 7 3 q-2 8 -8 4 z"/>
+                <path d="M31 62 q4 -3 5 2 q-1 5 -5 3 z"/>
+                <path d="M95 42 l4 3 -3 5 z"/>
+              </mask>
+            </defs>
+
+            <!-- sinew cords tying the hide to the bone -->
+            <path d="M22 14 L20 23 M41 14 L40 24 M60 14 V25 M79 14 L80 24 M98 14 L100 23" stroke="#1e1428" stroke-width="1.4" fill="none"/>
+
+            <!-- ashen dead hide with rot holes -->
+            <g mask="url(#dk-holes)">
+              <path fill="url(#dk-hide)" filter="url(#fx-hide)" d="M17 20 Q60 27 103 20 Q99 52 104 82 Q100 116 103 148 L95 166 L90 151 L82 180 L74 159 L64 188 L56 161 L46 177 L40 155 L30 171 L25 147 L17 160 Q13 125 18 92 Q13 56 17 20 Z"/>
+              <g filter="url(#fx-blur)" opacity=".6">
+                <ellipse cx="34" cy="122" rx="10" ry="14" fill="#1a0f24"/>
+                <ellipse cx="89" cy="72" rx="8" ry="6" fill="#2a1538"/>
+                <ellipse cx="66" cy="150" rx="12" ry="7" fill="#120a1a"/>
+                <ellipse cx="60" cy="30" rx="30" ry="5" fill="#120a1a"/>
+              </g>
+              <!-- crude stitched seams -->
+              <g fill="none" stroke="#150d1d">
+                <path d="M27 32 Q34 90 30 150" stroke-width="1"/>
+                <path d="M27 32 Q34 90 30 150" stroke-width="5" stroke-dasharray="1.2 5"/>
+                <path d="M93 96 Q97 118 91 142" stroke-width="1"/>
+                <path d="M93 96 Q97 118 91 142" stroke-width="5" stroke-dasharray="1.2 5"/>
+              </g>
+            </g>
+
+            <!-- crescent daubed in dark purple ichor -->
+            <g fill="#34104f" filter="url(#fx-rough)" opacity=".95">
+              <path d="M60 52 A30 30 0 0 0 60 112 A34 34 0 0 1 60 52 Z"/>
+              <path d="M44 104 q1.5 9 .5 14 q-2.2 -1 -2 -13 z"/>
+              <path d="M50 108 q1.2 11 .3 17 q-2 -1.5 -1.8 -16 z"/>
+            </g>
+
+            <!-- cracked skull -->
+            <g stroke="#1e1428" stroke-width=".8">
+              <path fill="url(#dk-bone)" d="M62 62 C50 62 45 72 45 82 C45 90 49 95 53 97 V104 H71 V97 C75 95 79 90 79 82 C79 72 74 62 62 62 Z"/>
+              <path fill="none" d="M64 63 L62 70 L66 74 L63 80 M53 98 H71 M56 98 V104 M59.5 98 V104 M63 98 V104 M66.5 98 V104"/>
+            </g>
+            <g fill="#0a0610">
+              <ellipse cx="55.5" cy="83" rx="5" ry="5.5"/>
+              <ellipse cx="68.5" cy="83" rx="5" ry="5.5"/>
+              <path d="M62 88 L59 94 H65 Z"/>
+            </g>
+            <!-- violet glow in the eye sockets -->
+            <g fill="#b36bff" filter="url(#fx-glow)">
+              <circle cx="55.5" cy="84" r="1.4"/>
+              <circle cx="68.5" cy="84" r="1.4"/>
+            </g>
+
+            <!-- bone crossbar -->
+            <g fill="url(#dk-bone)" stroke="#4a4052" stroke-width=".6">
+              <rect x="12" y="9" width="96" height="6" rx="3"/>
+              <circle cx="10" cy="8.5" r="4.2"/><circle cx="10" cy="15.5" r="4.2"/>
+              <circle cx="110" cy="8.5" r="4.2"/><circle cx="110" cy="15.5" r="4.2"/>
+            </g>
+
+            <!-- finger bone hanging from the longest tatter -->
+            <path d="M64 187 V192" stroke="#1e1428" stroke-width="1"/>
+            <rect x="62" y="191" width="4" height="8" rx="2" fill="url(#dk-bone)" stroke="#4a4052" stroke-width=".5"/>
+          </svg>
+        </span>
+        <h2 class="plate-name" id="dark-name">Duskmoor</h2>
+        <p class="plate-motto">Keepers of the moonlit spire</p>
+        <p class="plate-lore">Above the dead river, the Moon Court trades in secrets, and nothing it buys is ever returned.</p>
+        <button class="plate-btn">Begin as Duskmoor</button>
+      </div>
+    </section>
+
+    <!-- ===================== STONEHELM ===================== -->
+    <section class="plate" data-kingdom="mountain" aria-labelledby="mountain-name">
+      <div class="plate-inner">
+        <span class="plate-crest">
+          <svg class="banner-art" viewBox="0 0 120 200" aria-hidden="true">
+            <defs>
+              <linearGradient id="mt-cloth" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#b07a33"/>
+                <stop offset=".6" stop-color="#7a4f1c"/>
+                <stop offset="1" stop-color="#4e3110"/>
+              </linearGradient>
+              <linearGradient id="mt-folds" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0" stop-color="#000" stop-opacity=".3"/>
+                <stop offset=".18" stop-color="#000" stop-opacity="0"/>
+                <stop offset=".34" stop-color="#000" stop-opacity=".14"/>
+                <stop offset=".5" stop-color="#fff" stop-opacity=".07"/>
+                <stop offset=".68" stop-color="#000" stop-opacity=".16"/>
+                <stop offset=".85" stop-color="#000" stop-opacity="0"/>
+                <stop offset="1" stop-color="#000" stop-opacity=".3"/>
+              </linearGradient>
+              <linearGradient id="mt-gold" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#f6d68c"/>
+                <stop offset="1" stop-color="#b8843a"/>
+              </linearGradient>
+              <linearGradient id="mt-stone" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#7a6650"/>
+                <stop offset="1" stop-color="#342920"/>
+              </linearGradient>
+              <clipPath id="mt-shape"><path d="M16 14 H104 V156 L60 190 L16 156 Z"/></clipPath>
+              <clipPath id="mt-roundel"><circle cx="60" cy="100" r="31"/></clipPath>
+              <g id="mt-tassel">
+                <path d="M0 0 V6" stroke="#b8843a" stroke-width="1.2"/>
+                <circle cy="7" r="2.2" fill="url(#mt-gold)"/>
+                <path d="M-2.6 8.5 H2.6 L3.2 17 H-3.2 Z" fill="url(#mt-gold)"/>
+                <path d="M-2 10 V17 M0 10 V17 M2 10 V17" stroke="#8a5f24" stroke-width=".5"/>
+              </g>
+            </defs>
+
+            <!-- heavy wool cloth with folds -->
+            <path d="M16 14 H104 V156 L60 190 L16 156 Z" fill="url(#mt-cloth)" filter="url(#fx-cloth)"/>
+            <g clip-path="url(#mt-shape)">
+              <rect x="16" y="14" width="88" height="176" fill="url(#mt-folds)"/>
+              <!-- top band with a woven mountain-range pattern -->
+              <rect x="16" y="14" width="88" height="14" fill="#3a2410" opacity=".9"/>
+              <path fill="url(#mt-gold)" d="M20 26 l5 -7 5 7 z M30 26 l5 -7 5 7 z M40 26 l5 -7 5 7 z M50 26 l5 -7 5 7 z M60 26 l5 -7 5 7 z M70 26 l5 -7 5 7 z M80 26 l5 -7 5 7 z M90 26 l5 -7 5 7 z"/>
+            </g>
+
+            <!-- embroidered border -->
+            <path d="M22 32 H98 V153 L60 182 L22 153 Z" fill="none" stroke="url(#mt-gold)" stroke-width="2"/>
+            <path d="M26 36 H94 V151 L60 177 L26 151 Z" fill="none" stroke="#e3b862" stroke-width=".8" stroke-dasharray="2 2" opacity=".8"/>
+
+            <!-- gold roundel with the mountain -->
+            <circle cx="60" cy="100" r="34" fill="#24170b" stroke="url(#mt-gold)" stroke-width="3"/>
+            <g clip-path="url(#mt-roundel)">
+              <rect x="26" y="66" width="68" height="68" fill="#2e2016"/>
+              <path d="M24 124 L40 98 L48 107 L58 90 L70 105 L80 94 L98 124 Z" fill="#4a3a2c"/>
+              <path d="M28 134 L52 80 L60 90 L70 66 L94 134 Z" fill="url(#mt-stone)"/>
+              <path d="M70 66 L66 92 L70 134 H78 L74 100 Z" fill="#ffe9c8" opacity=".14"/>
+              <path d="M52 80 L50 100 L54 134 H58 L55 98 Z" fill="#ffe9c8" opacity=".1"/>
+              <path d="M40 112 Q50 108 58 114 M62 118 Q72 112 84 118 M46 126 Q58 122 70 128" fill="none" stroke="#1f1710" stroke-width=".8"/>
+              <path d="M70 66 L63 81 L67 79 L70 84 L73 78 L77 81 Z" fill="#f1e7d0"/>
+              <path d="M52 80 L47 92 L51 90 L53 94 L56 90 Z" fill="#f1e7d0"/>
+              <path d="M55 134 V122 a5 5 0 0 1 10 0 V134 Z" fill="#120c06" stroke="#e3b862" stroke-width=".7"/>
+              <rect x="44" y="114" width="2" height="3" fill="#ffbf5a"/>
+              <rect x="78" y="112" width="2" height="3" fill="#ffbf5a"/>
+              <rect x="26" y="130" width="68" height="6" fill="#1c130b"/>
+            </g>
+            <circle cx="60" cy="100" r="30.5" fill="none" stroke="#e3b862" stroke-width=".6"/>
+
+            <!-- iron rod with gold fittings -->
+            <rect x="8" y="9" width="104" height="6" rx="2" fill="#3b3530"/>
+            <rect x="8" y="9" width="104" height="2" rx="1" fill="#6a625a" opacity=".7"/>
+            <path d="M8 8.5 L0 12 L8 15.5 Z M112 8.5 L120 12 L112 15.5 Z" fill="url(#mt-gold)"/>
+            <g fill="url(#mt-gold)">
+              <rect x="22" y="8" width="4" height="8" rx="1"/>
+              <rect x="58" y="8" width="4" height="8" rx="1"/>
+              <rect x="94" y="8" width="4" height="8" rx="1"/>
+            </g>
+
+            <!-- tassels -->
+            <use href="#mt-tassel" x="16" y="156"/>
+            <use href="#mt-tassel" x="104" y="156"/>
+            <use href="#mt-tassel" x="60" y="190"/>
+          </svg>
+        </span>
+        <h2 class="plate-name" id="mountain-name">Stonehelm</h2>
+        <p class="plate-motto">Lords of the high passes</p>
+        <p class="plate-lore">Their halls are carved into storm-worn peaks, and their oaths are older than the stone.</p>
+        <button class="plate-btn">Begin as Stonehelm</button>
+      </div>
+    </section>
+
+    <!-- ===================== FROSTVALE ===================== -->
+    <section class="plate" data-kingdom="snow" aria-labelledby="snow-name">
+      <div class="plate-inner">
+        <span class="plate-crest">
+          <svg class="banner-art" viewBox="0 0 120 200" aria-hidden="true">
+            <defs>
+              <linearGradient id="sn-cloth" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#4f7fa6"/>
+                <stop offset=".6" stop-color="#2c5579"/>
+                <stop offset="1" stop-color="#173352"/>
+              </linearGradient>
+              <linearGradient id="sn-folds" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0" stop-color="#000" stop-opacity=".3"/>
+                <stop offset=".2" stop-color="#000" stop-opacity="0"/>
+                <stop offset=".4" stop-color="#fff" stop-opacity=".08"/>
+                <stop offset=".6" stop-color="#000" stop-opacity=".15"/>
+                <stop offset=".8" stop-color="#fff" stop-opacity=".06"/>
+                <stop offset="1" stop-color="#000" stop-opacity=".3"/>
+              </linearGradient>
+              <linearGradient id="sn-ice" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#f4fbff"/>
+                <stop offset="1" stop-color="#9fcdf0" stop-opacity=".85"/>
+              </linearGradient>
+              <linearGradient id="sn-steel" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#e3edf6"/>
+                <stop offset="1" stop-color="#6f8397"/>
+              </linearGradient>
+              <clipPath id="sn-shape"><path d="M16 14 H104 V178 L60 160 L16 178 Z"/></clipPath>
+              <g id="sn-arm">
+                <path d="M0 -5 V-25 M0 -10 L-6 -16 M0 -10 L6 -16 M0 -17 L-4.5 -21.5 M0 -17 L4.5 -21.5" fill="none"/>
+                <path d="M0 -25 L-2.5 -28.5 L0 -32 L2.5 -28.5 Z" fill="#e6f5ff" stroke="none"/>
+              </g>
+            </defs>
+
+            <!-- frozen cloth -->
+            <path d="M16 14 H104 V178 L60 160 L16 178 Z" fill="url(#sn-cloth)" filter="url(#fx-cloth)"/>
+            <g clip-path="url(#sn-shape)">
+              <rect x="16" y="14" width="88" height="166" fill="url(#sn-folds)"/>
+              <path d="M16 14 H104 V178 L60 160 L16 178 Z" fill="none" stroke="#eaf6ff" stroke-width="16" opacity=".7" filter="url(#fx-frost)"/>
+              <rect x="16" y="12" width="88" height="12" fill="#f4fbff" opacity=".6" filter="url(#fx-frost)"/>
+              <g fill="none" stroke="#eaf6ff" stroke-width=".8" stroke-linecap="round" opacity=".75">
+                <path d="M18 58 L36 72 M25 63 L23 70 M25 63 L32 61 M30 67 L29 74 M30 67 L37 65"/>
+                <path d="M102 124 L84 138 M95 129 L97 135 M95 129 L89 127 M90 134 L91 140 M90 134 L84 132"/>
+                <path d="M102 34 L88 46 M95 40 L97 45 M95 40 L90 39"/>
+                <path d="M18 140 L30 150 M24 145 L22 150 M24 145 L29 143"/>
+              </g>
+              <path d="M40 150 L46 140 L44 132 L50 124 M80 40 L76 48 L79 54" fill="none" stroke="#dff1ff" stroke-width=".6" opacity=".55"/>
+            </g>
+
+            <!-- ice-crystal crest -->
+            <circle cx="60" cy="92" r="30" fill="#0f2338" opacity=".75" stroke="url(#sn-ice)" stroke-width="2"/>
+            <g transform="translate(60 92)" stroke="#e6f5ff" stroke-width="2.2" stroke-linecap="round" filter="url(#fx-glow)">
+              <use href="#sn-arm"/>
+              <use href="#sn-arm" transform="rotate(60)"/>
+              <use href="#sn-arm" transform="rotate(120)"/>
+              <use href="#sn-arm" transform="rotate(180)"/>
+              <use href="#sn-arm" transform="rotate(240)"/>
+              <use href="#sn-arm" transform="rotate(300)"/>
+              <polygon points="0,-5 4.33,-2.5 4.33,2.5 0,5 -4.33,2.5 -4.33,-2.5" fill="#0f2338" stroke-width="1.4"/>
+            </g>
+
+            <!-- icicles hanging from the frozen tips -->
+            <path fill="url(#sn-ice)" d="M14 176 L17 195 L21 177 Z M27 173 L30 185 L33 172 Z M42 167 L44 176 L47 165.5 Z M57 159 L60 171 L63 159 Z M73 165.5 L76 176 L78 167 Z M87 172 L90 185 L93 173 Z M99 177 L103 195 L106 176 Z"/>
+
+            <!-- snow-covered steel rod with icicles -->
+            <rect x="8" y="9" width="104" height="6" rx="3" fill="url(#sn-steel)"/>
+            <path d="M8 9.5 Q30 5 50 8.5 Q70 5 90 8.5 Q104 6 112 9.5 L112 11 L8 11 Z" fill="#f4fbff"/>
+            <path fill="url(#sn-ice)" d="M24 14 L26 26 L28 14 Z M40 14 L41.5 21 L43 14 Z M66 14 L68 28 L70 14 Z M84 14 L85.5 22 L87 14 Z M100 14 L101.5 20 L103 14 Z"/>
+            <circle cx="6" cy="12" r="4" fill="url(#sn-steel)"/>
+            <circle cx="114" cy="12" r="4" fill="url(#sn-steel)"/>
+          </svg>
+        </span>
+        <h2 class="plate-name" id="snow-name">Frostvale</h2>
+        <p class="plate-motto">Wardens of the frozen north</p>
+        <p class="plate-lore">Beyond the bridge of ice, Frostvale's gates have never once been breached.</p>
+        <button class="plate-btn">Begin as Frostvale</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- Secondary menu (top-right, appears with the rest of the UI) -->
+  <nav class="corner-menu" aria-label="Main menu">
+    <button class="corner-btn">Card library</button>
+    <button class="corner-btn">Settings</button>
+  </nav>
+
+  <footer class="credit">© 2026 Erik Porter. All rights reserved.</footer>
+
+  <script src="js/title.js"></script>
+</body>
+</html>

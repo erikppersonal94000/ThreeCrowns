@@ -1,0 +1,533 @@
+/* ============ Tokens ============ */
+:root {
+  --night:     #0b0914;
+  --gold:      #e8b659;
+  --gold-dim:  #9c7a3a;
+  --parchment: #efe3c8;
+
+  /* Kingdom colors */
+  --dark:     #4a2272;  /* dark purple */
+  --mountain: #9a6a2c;
+  --snow:     #4f7fa6;
+
+  --fade: 10vw; /* width of the soft blend between panels */
+  --ease-panel: cubic-bezier(.3, .7, .2, 1);
+
+  --font-title:    "Pirata One", Georgia, serif;
+  --font-body:     "IM Fell English", Georgia, serif;
+  --font-caps:     "IM Fell English SC", Georgia, serif;
+  --font-dark:     "Grenze Gotisch", "Pirata One", serif;
+  --font-mountain: "Cinzel", Georgia, serif;
+  --font-snow:     "Uncial Antiqua", Georgia, serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body { margin: 0; min-height: 100%; }
+
+body {
+  background: var(--night);
+  color: var(--parchment);
+  font-family: var(--font-body);
+  overflow: hidden;
+  min-height: 100vh;
+}
+
+/* ============ Kingdom panels ============ */
+.realms {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+}
+
+.realm {
+  position: relative;
+  flex: 1 1 0;
+  overflow: hidden;
+  isolation: isolate;
+  opacity: 0;
+  transition:
+    flex-grow .9s var(--ease-panel),
+    opacity 1.8s ease,
+    filter .9s ease;
+}
+
+/* Each panel after the first slides under the previous edge and fades in
+   from the left, so the images cross-fade instead of meeting at a hard line */
+.realm + .realm {
+  margin-left: calc(var(--fade) * -1);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 var(--fade));
+          mask-image: linear-gradient(90deg, transparent 0, #000 var(--fade));
+}
+
+.realm-bg {
+  position: absolute;
+  inset: -4%;
+  z-index: 0;
+  background-size: cover;
+  background-repeat: no-repeat;
+  filter:
+    brightness(var(--bright, .65))
+    saturate(var(--sat, .85))
+    contrast(1.05)
+    hue-rotate(var(--hue, 0deg));
+  animation: kenburns 30s ease-in-out infinite alternate;
+  transition: translate .8s ease-out;
+}
+
+/* Per-kingdom image, crop point and color grade.
+   Tweak --bright / --sat / --hue if an image looks off. */
+.realm[data-kingdom="dark"] .realm-bg {
+  background-image: url("../graphics/title/dark.jpg");
+  background-position: center 25%;
+  --bright: .8;
+  --sat: .8;
+  --hue: -55deg; /* turns the red glows violet */
+}
+.realm[data-kingdom="mountain"] .realm-bg {
+  background-image: url("../graphics/title/mountain.jpg");
+  background-position: center 35%;
+  --bright: .6;
+  --sat: .8;
+  animation-delay: -10s;
+}
+.realm[data-kingdom="snow"] .realm-bg {
+  background-image: url("../graphics/title/snow.jpg");
+  background-position: center 40%;
+  --bright: .5;   /* daytime image, so it gets darkened the most */
+  --sat: .7;
+  animation-delay: -20s;
+}
+
+@keyframes kenburns {
+  from { transform: scale(1); }
+  to   { transform: scale(1.1) translate(-1.5%, -1%); }
+}
+
+/* Kingdom color tint */
+.realm::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  mix-blend-mode: soft-light;
+  opacity: .75;
+}
+.realm[data-kingdom="dark"]::before     { background: #4b1f78; }
+.realm[data-kingdom="mountain"]::before { background: #c08a3e; }
+.realm[data-kingdom="snow"]::before     { background: #2a4f8a; }
+
+/* Dark top and bottom so the UI stays readable */
+.realm::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(180deg,
+    rgba(11, 9, 20, .55) 0%,
+    rgba(11, 9, 20, 0) 30%,
+    rgba(11, 9, 20, 0) 50%,
+    rgba(11, 9, 20, .92) 100%);
+}
+
+/* Intro: panels fade in one at a time */
+body.lit-dark     .realm[data-kingdom="dark"],
+body.lit-mountain .realm[data-kingdom="mountain"],
+body.lit-snow     .realm[data-kingdom="snow"] { opacity: 1; }
+
+/* Focus: chosen kingdom widens, the others dim */
+body[data-focus] .realm { filter: brightness(.5) saturate(.6); }
+body[data-focus="dark"]     .realm[data-kingdom="dark"],
+body[data-focus="mountain"] .realm[data-kingdom="mountain"],
+body[data-focus="snow"]     .realm[data-kingdom="snow"] {
+  flex-grow: 1.8;
+  filter: none;
+}
+
+/* ============ Shared overlays ============ */
+#particles {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.fog {
+  position: fixed;
+  left: -10%;
+  right: -10%;
+  bottom: 0;
+  z-index: 1;
+  height: 35vh;
+  background:
+    radial-gradient(ellipse 40% 60% at 20% 100%, rgba(200, 195, 220, .14), transparent 70%),
+    radial-gradient(ellipse 45% 50% at 55% 100%, rgba(200, 195, 220, .10), transparent 70%),
+    radial-gradient(ellipse 40% 60% at 85% 100%, rgba(200, 195, 220, .14), transparent 70%);
+  animation: drift 30s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes drift {
+  from { transform: translateX(-3%); }
+  to   { transform: translateX(3%); }
+}
+
+.vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 55% 40% at 50% 22%, rgba(11, 9, 20, .55), transparent 75%),
+    radial-gradient(ellipse at center, transparent 55%, rgba(11, 9, 20, .75) 100%);
+}
+
+/* ============ Title ============ */
+.title-screen {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  padding: 8vh 16px 0;
+  text-align: center;
+  pointer-events: none; /* hovers pass through to the panels */
+}
+
+.game-title {
+  --glow: rgba(0, 0, 0, .8);
+  display: grid; /* stacks the four title versions on top of each other */
+  margin: 0;
+  font-weight: 400;
+  font-size: clamp(3.5rem, 11vw, 9rem);
+  line-height: 1;
+  filter: drop-shadow(0 2px 0 rgba(0, 0, 0, .6)) drop-shadow(0 0 28px var(--glow));
+  opacity: 0;
+  transform: scale(1.08);
+  transition:
+    opacity 1.6s ease,
+    transform 2.4s cubic-bezier(.2, .7, .2, 1),
+    filter .8s ease;
+}
+
+.title-face {
+  grid-area: 1 / 1;
+  align-self: center;
+  justify-self: center;
+  white-space: nowrap;
+  -webkit-background-clip: text;
+          background-clip: text;
+  color: transparent;
+  opacity: 0;
+  transform: scale(.97);
+  transition: opacity .7s ease, transform .9s ease;
+}
+
+/* Default: molten gold */
+.title-face[data-face="default"] {
+  font-family: var(--font-title);
+  background-image: linear-gradient(180deg, #fff3cf 0%, var(--gold) 45%, #a86f22 70%, #f3cc7a 100%);
+  opacity: 1;
+  transform: none;
+}
+/* Duskmoor: gothic, pale violet into deep purple */
+.title-face[data-face="dark"] {
+  font-family: var(--font-dark);
+  font-weight: 800;
+  font-size: 1.02em;
+  background-image: linear-gradient(180deg, #efe4ff 0%, #a77be0 40%, #4b2272 72%, #c9a7f0 100%);
+}
+/* Stonehelm: carved capitals in bronze */
+.title-face[data-face="mountain"] {
+  font-family: var(--font-mountain);
+  font-weight: 900;
+  font-size: .66em;
+  letter-spacing: .04em;
+  background-image: linear-gradient(180deg, #fff0c8 0%, #d9a650 42%, #7c4e1c 72%, #f0c77a 100%);
+}
+/* Frostvale: old northern hand in ice */
+.title-face[data-face="snow"] {
+  font-family: var(--font-snow);
+  font-size: .78em;
+  background-image: linear-gradient(180deg, #ffffff 0%, #cfeaff 40%, #6fa6d6 72%, #e8f6ff 100%);
+}
+
+/* Crossfade to the focused kingdom's title */
+body[data-focus] .title-face[data-face="default"] { opacity: 0; transform: scale(1.03); }
+body[data-focus="dark"]     .title-face[data-face="dark"],
+body[data-focus="mountain"] .title-face[data-face="mountain"],
+body[data-focus="snow"]     .title-face[data-face="snow"] { opacity: 1; transform: none; }
+
+/* Title glow takes on the focused kingdom's color */
+body[data-focus="dark"]     .game-title { --glow: rgba(120, 50, 190, .85); }
+body[data-focus="mountain"] .game-title { --glow: rgba(220, 150, 60, .75); }
+body[data-focus="snow"]     .game-title { --glow: rgba(120, 190, 255, .8); }
+
+.tagline {
+  margin: 1rem auto 0;
+  max-width: 34ch;
+  font-style: italic;
+  font-size: clamp(1.05rem, 2vw, 1.35rem);
+  line-height: 1.5;
+  color: rgba(239, 227, 200, .9);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, .9);
+  opacity: 0;
+  transition: opacity 1.4s ease .4s;
+}
+
+.hint {
+  margin: 2.5rem 0 0;
+  font-family: var(--font-caps);
+  font-size: 1.05rem;
+  color: var(--parchment);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, .9);
+  opacity: 0;
+  transition: opacity .6s ease;
+}
+
+body.ready .game-title { opacity: 1; transform: scale(1); }
+body.ready .tagline    { opacity: 1; }
+body.ready .hint       { animation: breathe 3.2s ease-in-out 1.2s infinite; }
+body.touched .hint     { animation: none; opacity: 0; }
+
+@keyframes breathe {
+  0%, 100% { opacity: .25; }
+  50%      { opacity: .8; }
+}
+
+/* ============ Kingdom plates ============ */
+/* This layer mirrors the panel layout so each plate sits in its own kingdom */
+.plates {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  pointer-events: none;
+}
+
+.plate {
+  flex: 1 1 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 calc(var(--fade) * .6) 10vh;
+  transition: flex-grow .9s var(--ease-panel);
+}
+.plate + .plate { margin-left: calc(var(--fade) * -1); }
+
+body[data-focus="dark"]     .plate[data-kingdom="dark"],
+body[data-focus="mountain"] .plate[data-kingdom="mountain"],
+body[data-focus="snow"]     .plate[data-kingdom="snow"] { flex-grow: 1.8; }
+
+.plate-inner {
+  --c: var(--gold);
+  --accent: var(--gold);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 300px;
+  text-align: center;
+}
+.plate[data-kingdom="dark"]     .plate-inner { --c: var(--dark);     --accent: #b58bdc; }
+.plate[data-kingdom="mountain"] .plate-inner { --c: var(--mountain); --accent: var(--gold); }
+.plate[data-kingdom="snow"]     .plate-inner { --c: var(--snow);     --accent: #bfe3ff; }
+
+/* soft shadow pool behind the text */
+.plate-inner::before {
+  content: "";
+  position: absolute;
+  inset: -40px -60px -30px;
+  z-index: -1;
+  background: radial-gradient(ellipse at center 60%, rgba(11, 9, 20, .7), transparent 70%);
+  opacity: 0;
+  transition: opacity .4s ease;
+}
+
+/* Hidden state: every piece sits a little low and invisible */
+.plate-inner > * {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity .3s ease, transform .3s ease;
+}
+
+/* Shown state: pieces rise in one after another */
+.plate.is-active .plate-inner::before { opacity: 1; }
+.plate.is-active .plate-inner > * {
+  opacity: 1;
+  transform: none;
+  transition-duration: .6s;
+}
+.plate.is-active .plate-inner > :nth-child(2) { transition-delay: .08s; }
+.plate.is-active .plate-inner > :nth-child(3) { transition-delay: .16s; }
+.plate.is-active .plate-inner > :nth-child(4) { transition-delay: .24s; }
+.plate.is-active .plate-inner > :nth-child(5) { transition-delay: .34s; }
+
+/* The banner drops down instead of rising */
+.plate-inner > .plate-crest { transform: translateY(-20px); }
+.plate.is-active .plate-inner > .plate-crest { transform: none; }
+
+/* Detailed SVG banners */
+.banner-art {
+  display: block;
+  width: clamp(76px, 8.5vw, 110px);
+  height: auto;
+  overflow: visible;
+  transform-origin: 50% 5%;
+  animation: sway 6s ease-in-out infinite;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .6)) drop-shadow(0 0 14px var(--c));
+}
+.plate[data-kingdom="mountain"] .banner-art { animation-delay: -2s; }
+.plate[data-kingdom="snow"] .banner-art     { animation-delay: -4s; }
+
+@keyframes sway {
+  0%, 100% { transform: rotate(-1.2deg) skewX(-1deg); }
+  50%      { transform: rotate(1.2deg) skewX(1deg); }
+}
+
+/* Kingdom names, each in its own typeface */
+.plate-name {
+  margin: .6rem 0 0;
+  font-weight: 400;
+  line-height: 1;
+  color: #fff3d6;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, .9), 0 0 24px var(--c);
+}
+.plate[data-kingdom="dark"] .plate-name {
+  font-family: var(--font-dark);
+  font-weight: 800;
+  font-size: clamp(2.1rem, 3.5vw, 3.1rem);
+  color: #efe4ff;
+}
+.plate[data-kingdom="mountain"] .plate-name {
+  font-family: var(--font-mountain);
+  font-weight: 900;
+  font-size: clamp(1.5rem, 2.6vw, 2.3rem);
+  letter-spacing: .04em;
+  color: #fff0c8;
+}
+.plate[data-kingdom="snow"] .plate-name {
+  font-family: var(--font-snow);
+  font-size: clamp(1.7rem, 2.9vw, 2.6rem);
+  color: #f2faff;
+}
+
+.plate-motto {
+  margin: .35rem 0 0;
+  font-family: var(--font-caps);
+  font-size: 1.05rem;
+  color: var(--accent);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, .9);
+}
+
+.plate-lore {
+  margin: .75rem 0 0;
+  max-width: 30ch;
+  font-style: italic;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: rgba(239, 227, 200, .85);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, .95);
+}
+
+.plate-btn {
+  margin-top: 1.25rem;
+  padding: .7rem 1.6rem;
+  font-family: var(--font-caps);
+  font-size: 1.2rem;
+  color: #2a1a08;
+  background: linear-gradient(180deg, #f6d68c, var(--gold) 50%, #b8843a);
+  border: 1px solid #f6d68c;
+  border-radius: 3px;
+  cursor: pointer;
+  pointer-events: none; /* not clickable while hidden */
+  transition: box-shadow .2s ease, color .2s ease;
+}
+.plate.is-active .plate-btn { pointer-events: auto; }
+
+.plate-btn:hover,
+.plate-btn:focus-visible {
+  color: #1a0f04;
+  box-shadow: 0 0 28px rgba(232, 182, 89, .55);
+  outline: none;
+}
+.plate-btn:focus-visible { outline: 2px solid #fff3d6; outline-offset: 3px; }
+
+/* ============ Corner menu ============ */
+.corner-menu {
+  position: fixed;
+  top: 18px;
+  right: 20px;
+  z-index: 3;
+  display: flex;
+  gap: .5rem;
+  opacity: 0;
+  transition: opacity .5s ease;
+}
+body[data-focus] .corner-menu,
+.corner-menu:focus-within { opacity: 1; }
+body:not([data-focus]) .corner-menu:not(:focus-within) { pointer-events: none; }
+
+.corner-btn {
+  padding: .45rem 1rem;
+  font-family: var(--font-caps);
+  font-size: 1rem;
+  color: var(--parchment);
+  background: rgba(11, 9, 20, .65);
+  border: 1px solid rgba(232, 182, 89, .35);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: color .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+.corner-btn:hover,
+.corner-btn:focus-visible {
+  color: #fff4d6;
+  border-color: var(--gold);
+  box-shadow: 0 0 16px rgba(232, 182, 89, .25);
+  outline: none;
+}
+
+.credit {
+  position: fixed;
+  bottom: 12px;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  text-align: center;
+  font-size: .8rem;
+  color: rgba(239, 227, 200, .45);
+  pointer-events: none;
+}
+
+/* ============ Small screens ============ */
+@media (max-width: 700px) {
+  :root { --fade: 14vw; }
+  .title-screen { padding-top: 10vh; }
+  .plate { padding: 0 8px 9vh; }
+  .plate-lore { display: none; }
+  .plate-motto { font-size: .85rem; }
+  .plate-btn { font-size: .95rem; padding: .55rem .9rem; }
+  .corner-btn { font-size: .85rem; padding: .35rem .7rem; }
+  .banner-art { width: 64px; }
+  .plate[data-kingdom="dark"] .plate-name     { font-size: 1.7rem; }
+  .plate[data-kingdom="mountain"] .plate-name { font-size: 1.2rem; }
+  .plate[data-kingdom="snow"] .plate-name     { font-size: 1.4rem; }
+}
+
+@media (max-height: 700px) {
+  .title-screen { padding-top: 4vh; }
+  .plate { padding-bottom: 6vh; }
+  .plate-lore { display: none; }
+}
+
+/* ============ Reduced motion ============ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  body.ready .hint { opacity: .6; }
+}
