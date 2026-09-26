@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Card Library · Three Crowns</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@600;800&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/cards.css">
+</head>
+<body>
+  <!-- Shared pieces for every card frame -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <linearGradient id="cf-iron" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#2e2436"/>
+        <stop offset=".5" stop-color="#0c0910"/>
+        <stop offset="1" stop-color="#241a2c"/>
+      </linearGradient>
+      <linearGradient id="cf-bone" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#ece5ef"/>
+        <stop offset="1" stop-color="#8a8194"/>
+      </linearGradient>
+      <linearGradient id="cf-plate" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#2d1b42"/>
+        <stop offset="1" stop-color="#110a1a"/>
+      </linearGradient>
+      <linearGradient id="cf-textbox" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#1a1226"/>
+        <stop offset="1" stop-color="#0b0811"/>
+      </linearGradient>
+      <linearGradient id="cf-gem" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#e3c6ff"/>
+        <stop offset=".5" stop-color="#8a4dd6"/>
+        <stop offset="1" stop-color="#2d0f52"/>
+      </linearGradient>
+      <radialGradient id="cf-gem-radial" cx=".4" cy=".35" r=".7">
+        <stop offset="0" stop-color="#f0dcff"/>
+        <stop offset=".35" stop-color="#9b5ce6"/>
+        <stop offset=".8" stop-color="#3b1466"/>
+        <stop offset="1" stop-color="#1a0830"/>
+      </radialGradient>
+      <radialGradient id="cf-art-vignette" cx=".5" cy=".42" r=".75">
+        <stop offset=".5" stop-color="#000" stop-opacity="0"/>
+        <stop offset="1" stop-color="#000" stop-opacity=".85"/>
+      </radialGradient>
+      <radialGradient id="cb-bg" cx=".5" cy=".45" r=".75">
+        <stop offset="0" stop-color="#2a1340"/>
+        <stop offset=".6" stop-color="#110a1a"/>
+        <stop offset="1" stop-color="#050308"/>
+      </radialGradient>
+      <pattern id="cb-lattice" patternUnits="userSpaceOnUse" width="40" height="40">
+        <path d="M0 20 L20 0 L40 20 L20 40 Z" fill="none" stroke="#2a1a3d" stroke-width="1"/>
+      </pattern>
+
+      <!-- gothic arch window for the art -->
+      <clipPath id="cf-arch">
+        <path d="M40 392 V160 Q40 100 250 70 Q460 100 460 160 V392 Z"/>
+      </clipPath>
+
+      <!-- one vertebra of the spine running down the frame sides -->
+      <g id="cf-vertebra">
+        <rect x="-5" y="0" width="10" height="14" rx="3" fill="url(#cf-bone)"/>
+        <rect x="-7" y="5" width="14" height="4" rx="2" fill="url(#cf-bone)" opacity=".8"/>
+      </g>
+
+      <!-- a single bone, used for crossed bones -->
+      <g id="cf-bone-piece" fill="url(#cf-bone)" stroke="#4a4052" stroke-width=".6">
+        <rect x="-18" y="-3" width="36" height="6" rx="3"/>
+        <circle cx="-18" cy="-3.2" r="4"/><circle cx="-18" cy="3.2" r="4"/>
+        <circle cx="18" cy="-3.2" r="4"/><circle cx="18" cy="3.2" r="4"/>
+      </g>
+
+      <!-- skull, centered on 0,0 -->
+      <g id="cf-skull" stroke="#1e1428" stroke-width=".8">
+        <path fill="url(#cf-bone)" d="M0 -22 C-14 -22 -20 -11 -20 -1 C-20 7 -16 12 -12 14 V21 H12 V14 C16 12 20 7 20 -1 C20 -11 14 -22 0 -22 Z"/>
+        <path fill="none" d="M2 -21 L0 -14 L4 -10 L1 -4 M-12 15 H12 M-6 15 V21 M-2 15 V21 M2 15 V21 M6 15 V21"/>
+        <ellipse cx="-7" cy="0" rx="4.5" ry="5" fill="#0a0610"/>
+        <ellipse cx="7" cy="0" rx="4.5" ry="5" fill="#0a0610"/>
+        <path d="M0 5 L-2.5 10 H2.5 Z" fill="#0a0610"/>
+        <circle class="cf-eye-glow" cx="-7" cy="1" r="1.6" fill="#b36bff" stroke="none"/>
+        <circle class="cf-eye-glow" cx="7" cy="1" r="1.6" fill="#b36bff" stroke="none"/>
+      </g>
+
+      <filter id="fx-cglow" x="-40%" y="-40%" width="180%" height="180%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+  </svg>
+
+  <canvas id="motes" aria-hidden="true"></canvas>
+
+  <header class="topbar">
+    <a class="back-link" href="index.html">Back to title</a>
+    <h1 class="page-title">Card library</h1>
+    <nav class="kingdom-tabs" aria-label="Kingdoms">
+      <button class="tab is-active" aria-pressed="true">Duskmoor</button>
+    </nav>
+  </header>
+
+  <main>
+    <p class="count" id="card-count"></p>
+    <div class="card-grid" id="card-grid"></div>
+  </main>
+
+  <!-- Large inspect view -->
+  <dialog class="inspect" id="inspect" aria-label="Inspect card">
+    <div class="inspect-stage" id="inspect-stage"></div>
+    <div class="inspect-actions">
+      <button class="action" id="flip-btn">Flip card</button>
+      <button class="action" id="close-btn">Close</button>
+    </div>
+  </dialog>
+
+  <script src="js/cards.js"></script>
+</body>
+</html>

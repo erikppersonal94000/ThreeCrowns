@@ -481,6 +481,8 @@ body:not([data-focus]) .corner-menu:not(:focus-within) { pointer-events: none; }
   border-radius: 3px;
   cursor: pointer;
   transition: color .2s ease, border-color .2s ease, box-shadow .2s ease;
+  display: inline-block;
+  text-decoration: none;
 }
 .corner-btn:hover,
 .corner-btn:focus-visible {

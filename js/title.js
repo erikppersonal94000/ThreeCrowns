@@ -317,7 +317,7 @@
 
   function keyboardFocusInUI() {
     const el = document.activeElement;
-    return el && el.tagName === "BUTTON" && el.matches(":focus-visible");
+    return el && (el.tagName === "BUTTON" || el.tagName === "A") && el.matches(":focus-visible");
   }
 
   // Moving over a panel shows that kingdom; stopping for a while hides everything
@@ -337,7 +337,7 @@
   root.addEventListener("mouseleave", () => clearFocus(300));
 
   // Don't hide the UI while the pointer is on a button
-  document.querySelectorAll("button").forEach((btn) => {
+   document.querySelectorAll("button, a").forEach((btn) => {
     btn.addEventListener("pointerenter", () => { overUI = true; clearTimeout(idleTimer); });
     btn.addEventListener("pointerleave", () => { overUI = false; armIdle(); });
   });
