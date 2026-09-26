@@ -1,0 +1,414 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 332">
+  <defs>
+    <!-- ========== Gradients ========== -->
+    <radialGradient id="p-sky" cx="0.62" cy="0.2" r="0.9">
+      <stop offset="0" stop-color="#4a2a6e"/>
+      <stop offset="0.35" stop-color="#23123a"/>
+      <stop offset="0.75" stop-color="#0c0614"/>
+      <stop offset="1" stop-color="#030205"/>
+    </radialGradient>
+    <radialGradient id="p-moon" cx="0.42" cy="0.38" r="0.62">
+      <stop offset="0" stop-color="#f4ecff"/>
+      <stop offset="0.7" stop-color="#bfa9e0"/>
+      <stop offset="1" stop-color="#8d74b8"/>
+    </radialGradient>
+    <radialGradient id="p-halo">
+      <stop offset="0" stop-color="#b69be6" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#b69be6" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="p-robe" x1="0" y1="0" x2="0.3" y2="1">
+      <stop offset="0" stop-color="#2a1a40"/>
+      <stop offset="0.45" stop-color="#140b20"/>
+      <stop offset="1" stop-color="#07040b"/>
+    </linearGradient>
+    <!-- light cast by the soul orb -->
+    <radialGradient id="p-light" gradientUnits="userSpaceOnUse" cx="298" cy="48" r="230">
+      <stop offset="0" stop-color="#c89cff" stop-opacity="0.75"/>
+      <stop offset="0.35" stop-color="#7a44c0" stop-opacity="0.35"/>
+      <stop offset="0.7" stop-color="#3a1a60" stop-opacity="0.1"/>
+      <stop offset="1" stop-color="#3a1a60" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="p-shadow" gradientUnits="userSpaceOnUse" cx="150" cy="250" r="170">
+      <stop offset="0" stop-color="#000" stop-opacity="0.65"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="p-hem" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#000" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0.75"/>
+    </linearGradient>
+    <linearGradient id="p-bone" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f2ecf5"/>
+      <stop offset="0.5" stop-color="#b9aec4"/>
+      <stop offset="1" stop-color="#5d546a"/>
+    </linearGradient>
+    <linearGradient id="p-bone-lit" x1="1" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.5" stop-color="#e2d2f5"/>
+      <stop offset="1" stop-color="#8a7aa0"/>
+    </linearGradient>
+    <radialGradient id="p-orb" cx="0.42" cy="0.38" r="0.6">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.2" stop-color="#eed9ff"/>
+      <stop offset="0.5" stop-color="#b27bff"/>
+      <stop offset="0.85" stop-color="#5b24a0"/>
+      <stop offset="1" stop-color="#2a0c4f"/>
+    </radialGradient>
+    <radialGradient id="p-void" cx="0.5" cy="0.45" r="0.6">
+      <stop offset="0" stop-color="#000"/>
+      <stop offset="0.7" stop-color="#05020a"/>
+      <stop offset="1" stop-color="#1a0f28"/>
+    </radialGradient>
+    <radialGradient id="p-groundlight" gradientUnits="userSpaceOnUse" cx="210" cy="300" r="190">
+      <stop offset="0" stop-color="#9a5cf0" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#9a5cf0" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="p-ground" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#140b1f"/>
+      <stop offset="1" stop-color="#040206"/>
+    </linearGradient>
+    <linearGradient id="p-stone" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#0d0714"/>
+      <stop offset="0.7" stop-color="#1c1229"/>
+      <stop offset="1" stop-color="#4a2e70"/>
+    </linearGradient>
+    <linearGradient id="p-stone-r" x1="1" y1="0" x2="0" y2="0">
+      <stop offset="0" stop-color="#0d0714"/>
+      <stop offset="0.7" stop-color="#1c1229"/>
+      <stop offset="1" stop-color="#4a2e70"/>
+    </linearGradient>
+    <radialGradient id="p-vignette" cx="0.5" cy="0.45" r="0.75">
+      <stop offset="0.5" stop-color="#000" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0.85"/>
+    </radialGradient>
+    <linearGradient id="p-fade-up" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#fff"/>
+      <stop offset="1" stop-color="#000"/>
+    </linearGradient>
+    <linearGradient id="p-fade-band" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#000"/>
+      <stop offset="0.5" stop-color="#fff"/>
+      <stop offset="1" stop-color="#000"/>
+    </linearGradient>
+
+    <!-- ========== Masks & clips ========== -->
+    <mask id="p-mask-ground" maskUnits="userSpaceOnUse" x="0" y="0" width="420" height="332">
+      <rect x="0" y="170" width="420" height="162" fill="url(#p-fade-up)"/>
+    </mask>
+    <mask id="p-mask-band" maskUnits="userSpaceOnUse" x="0" y="0" width="420" height="332">
+      <rect x="0" y="150" width="420" height="120" fill="url(#p-fade-band)"/>
+    </mask>
+    <mask id="p-mask-sky" maskUnits="userSpaceOnUse" x="0" y="0" width="420" height="332">
+      <rect x="0" y="0" width="420" height="170" fill="url(#p-fade-band)"/>
+    </mask>
+    <clipPath id="p-robe-clip">
+      <path d="M210 70 C186 72 176 96 178 118 C160 130 150 160 146 200 C140 240 130 268 118 300 L140 292 L150 304 L166 294 L180 306 L194 296 L210 308 L226 296 L240 306 L254 294 L270 304 L280 292 L302 300 C290 268 280 240 274 200 C270 160 260 130 242 118 C244 96 234 72 210 70 Z"/>
+    </clipPath>
+
+    <!-- ========== Filters ========== -->
+    <filter id="p-fog" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.008 0.035" numOctaves="4" seed="8"/>
+      <feColorMatrix values="0 0 0 0 0.45  0 0 0 0 0.26  0 0 0 0 0.66  0 0 0 1.6 -0.62"/>
+    </filter>
+    <filter id="p-fog2" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.012 0.05" numOctaves="4" seed="21"/>
+      <feColorMatrix values="0 0 0 0 0.55  0 0 0 0 0.4  0 0 0 0 0.75  0 0 0 1.4 -0.6"/>
+    </filter>
+    <filter id="p-clouds" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.006 0.022" numOctaves="5" seed="4"/>
+      <feColorMatrix values="0 0 0 0 0.18  0 0 0 0 0.1  0 0 0 0 0.28  0 0 0 1.5 -0.5"/>
+    </filter>
+    <filter id="p-grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="3" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0" intercept="0.1"/></feComponentTransfer>
+    </filter>
+    <filter id="p-canvas" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="3" seed="12" result="n"/>
+      <feColorMatrix in="n" type="saturate" values="0" result="g"/>
+      <feComponentTransfer in="g" result="lift">
+        <feFuncR type="linear" slope="0.45" intercept="0.7"/>
+        <feFuncG type="linear" slope="0.45" intercept="0.7"/>
+        <feFuncB type="linear" slope="0.45" intercept="0.7"/>
+        <feFuncA type="linear" slope="0" intercept="1"/>
+      </feComponentTransfer>
+      <feBlend in="SourceGraphic" in2="lift" mode="multiply" result="t"/>
+      <feComposite in="t" in2="SourceGraphic" operator="in"/>
+    </filter>
+    <filter id="p-bloom" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="p-bloom-big" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="14"/>
+    </filter>
+    <filter id="p-dof" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur stdDeviation="1.6"/>
+    </filter>
+    <filter id="p-soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="3"/>
+    </filter>
+    <filter id="p-wisp" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="1.5"/>
+    </filter>
+
+    <!-- ========== Shaded pieces ========== -->
+    <g id="p-skull">
+      <path fill="url(#p-bone)" d="M0 -10 C-7 -10 -10 -5 -10 0 C-10 4 -8 6.5 -6 7.5 V10.5 H6 V7.5 C8 6.5 10 4 10 0 C10 -5 7 -10 0 -10 Z"/>
+      <path fill="#000" opacity="0.35" d="M-10 0 C-10 4 -8 6.5 -6 7.5 V10.5 H0 V6 C-4 5 -7 3 -8 -2 Z"/>
+      <ellipse cx="-3.6" cy="0.5" rx="2.6" ry="2.9" fill="#0a0610"/>
+      <ellipse cx="3.6" cy="0.5" rx="2.6" ry="2.9" fill="#0a0610"/>
+      <path d="M0 3.2 L-1.3 6 H1.3 Z" fill="#0a0610"/>
+      <path d="M-4 8.2 V10.5 M-1.3 8.2 V10.5 M1.3 8.2 V10.5 M4 8.2 V10.5" stroke="#3a3144" stroke-width="0.6"/>
+      <path d="M-6 -7 Q0 -9.5 5 -8" fill="none" stroke="#fff" stroke-width="0.8" opacity="0.35"/>
+    </g>
+    <g id="p-bonebit">
+      <rect x="-12" y="-2.2" width="24" height="4.4" rx="2.2" fill="url(#p-bone)"/>
+      <circle cx="-12" cy="-2.4" r="3" fill="url(#p-bone)"/><circle cx="-12" cy="2.4" r="3" fill="url(#p-bone)"/>
+      <circle cx="12" cy="-2.4" r="3" fill="url(#p-bone)"/><circle cx="12" cy="2.4" r="3" fill="url(#p-bone)"/>
+      <rect x="-12" y="0.6" width="24" height="1.6" rx="0.8" fill="#000" opacity="0.3"/>
+    </g>
+    <!-- flame shape reused in layers -->
+    <path id="p-flame" d="M128 28 C117 20 121 8 127 0 C129 8 137 12 135 20 C139 16 139 10 138 6 C145 14 141 26 128 28 Z"/>
+  </defs>
+
+  <!-- ========== Sky ========== -->
+  <rect width="420" height="332" fill="url(#p-sky)"/>
+  <g mask="url(#p-mask-sky)" opacity="0.9">
+    <rect x="0" y="0" width="420" height="170" filter="url(#p-clouds)"/>
+  </g>
+
+  <!-- moon with halo -->
+  <circle cx="330" cy="62" r="70" fill="url(#p-halo)"/>
+  <circle cx="330" cy="62" r="30" fill="url(#p-moon)" opacity="0.55"/>
+  <g fill="#6d5690" opacity="0.25">
+    <ellipse cx="322" cy="55" rx="7" ry="5"/>
+    <ellipse cx="338" cy="70" rx="5" ry="4"/>
+    <ellipse cx="336" cy="52" rx="3" ry="2.5"/>
+  </g>
+
+  <!-- ========== Distant Duskmoor spires (out of focus) ========== -->
+  <g filter="url(#p-dof)">
+    <path fill="#1f1230" d="M0 262 V200 L8 192 L14 200 V180 L22 168 L30 180 V210 L38 150 L42 110 L46 150 L54 210 V190 L60 176 L66 190 V214 L74 206 L80 214 V262 Z"/>
+    <path fill="#2e1b48" opacity="0.7" d="M42 110 L46 150 L44 150 Z M22 168 L30 180 L28 180 Z"/>
+    <path fill="#1a0f28" d="M352 262 V220 L360 212 L366 220 V196 L374 188 L380 150 L386 188 L394 196 V226 L402 218 L410 226 V210 L416 202 L420 206 V262 Z"/>
+    <path fill="#1f1230" opacity="0.8" d="M150 262 V236 L160 228 L170 236 V226 L178 218 L186 226 V262 Z"/>
+  </g>
+
+  <!-- mid-distance fog band -->
+  <g mask="url(#p-mask-band)" opacity="0.55">
+    <rect x="0" y="150" width="420" height="120" filter="url(#p-fog2)"/>
+  </g>
+
+  <!-- aura behind the necromancer -->
+  <ellipse cx="220" cy="160" rx="150" ry="130" fill="#6a34b0" opacity="0.35" filter="url(#p-bloom-big)"/>
+
+  <!-- ========== Graveyard ========== -->
+  <g>
+    <path fill="url(#p-stone)" d="M52 298 V266 a14 14 0 0 1 28 0 V298 Z" transform="rotate(-6 66 298)"/>
+    <path fill="url(#p-stone-r)" d="M342 298 V260 a16 16 0 0 1 32 0 V298 Z" transform="rotate(5 358 298)"/>
+    <path fill="url(#p-stone-r)" d="M300 298 V272 H292 V266 H300 V256 H306 V266 H314 V272 H306 V298 Z"/>
+    <path fill="url(#p-stone)" d="M104 298 V278 a10 10 0 0 1 20 0 V298 Z"/>
+  </g>
+
+  <!-- ground and the purple light pooling on it -->
+  <path fill="url(#p-ground)" d="M0 292 Q100 282 210 294 Q320 284 420 292 V332 H0 Z"/>
+  <ellipse cx="210" cy="302" rx="170" ry="28" fill="url(#p-groundlight)"/>
+
+  <!-- ground fog -->
+  <g mask="url(#p-mask-ground)" opacity="0.85">
+    <rect x="0" y="170" width="420" height="162" filter="url(#p-fog)"/>
+  </g>
+
+  <!-- ========== Skeletal hands clawing out of the graves ========== -->
+  <g fill="#b36bff" opacity="0.7" filter="url(#p-soft)">
+    <ellipse cx="87" cy="300" rx="24" ry="7"/>
+    <ellipse cx="341" cy="300" rx="24" ry="7"/>
+  </g>
+  <!-- shadow side -->
+  <g stroke="#2a2233" stroke-width="3.4" stroke-linecap="round" fill="none" opacity="0.8">
+    <path d="M85 300 L81 264 M91 300 L88 264"/>
+    <path d="M81 262 L74 244 M83 260 L80 240 M86 260 L87 239 M89 262 L94 245 M90 266 L98 258"/>
+    <path d="M337 300 L341 266 M343 300 L347 266"/>
+    <path d="M340 264 L334 248 M342 262 L340 243 M345 262 L347 242 M348 264 L354 249 M338 268 L331 261"/>
+  </g>
+  <!-- lit side -->
+  <g stroke="url(#p-bone)" stroke-width="2.2" stroke-linecap="round" fill="none">
+    <path d="M84 300 L80 264 M90 300 L87 264"/>
+    <path d="M80 262 L73 244 M82 260 L79 240 M85 260 L86 239 M88 262 L93 245 M89 266 L97 258"/>
+    <path d="M336 300 L340 266 M342 300 L346 266"/>
+    <path d="M339 264 L333 248 M341 262 L339 243 M344 262 L346 242 M347 264 L353 249 M337 268 L330 261"/>
+  </g>
+  <g fill="url(#p-bone)">
+    <ellipse cx="84" cy="262" rx="5.5" ry="4"/>
+    <ellipse cx="342" cy="264" rx="5.5" ry="4"/>
+  </g>
+
+  <!-- spirits rising from the hands, with faint faces -->
+  <g fill="none" stroke="#d2b2ff" stroke-width="2.4" stroke-linecap="round" opacity="0.45" filter="url(#p-wisp)">
+    <path d="M84 256 C78 220 96 190 88 156"/>
+    <path d="M342 258 C350 220 332 190 344 156"/>
+    <path d="M80 250 C70 226 82 210 74 190" stroke-width="1.4"/>
+  </g>
+  <g filter="url(#p-wisp)">
+    <ellipse cx="88" cy="146" rx="7" ry="9" fill="#d8c0ff" opacity="0.3"/>
+    <ellipse cx="344" cy="146" rx="7" ry="9" fill="#d8c0ff" opacity="0.3"/>
+  </g>
+  <g fill="#0a0610" opacity="0.6">
+    <circle cx="85.5" cy="144" r="1.5"/><circle cx="90.5" cy="144" r="1.5"/><ellipse cx="88" cy="150" rx="1.4" ry="2"/>
+    <circle cx="341.5" cy="144" r="1.5"/><circle cx="346.5" cy="144" r="1.5"/><ellipse cx="344" cy="150" rx="1.4" ry="2"/>
+  </g>
+
+  <!-- ========== Spine staff ========== -->
+  <path d="M128.8 50 L118.8 296" stroke="#2e2638" stroke-width="7" stroke-linecap="round"/>
+  <path d="M127.8 50 L117.8 296" stroke="url(#p-bone)" stroke-width="4.5" stroke-linecap="round"/>
+  <path d="M128 50 L118 296" stroke="#d8cfe0" stroke-width="9" stroke-dasharray="3 16" stroke-linecap="round" opacity="0.85"/>
+  <path d="M128 50 L118 296" stroke="#000" stroke-width="9" stroke-dasharray="1.2 17.8" stroke-dashoffset="-1.8" stroke-linecap="round" opacity="0.35"/>
+
+  <!-- ========== Robe ========== -->
+  <path fill="url(#p-robe)" filter="url(#p-canvas)" d="M210 70 C186 72 176 96 178 118 C160 130 150 160 146 200 C140 240 130 268 118 300 L140 292 L150 304 L166 294 L180 306 L194 296 L210 308 L226 296 L240 306 L254 294 L270 304 L280 292 L302 300 C290 268 280 240 274 200 C270 160 260 130 242 118 C244 96 234 72 210 70 Z"/>
+  <g clip-path="url(#p-robe-clip)">
+    <rect width="420" height="332" fill="url(#p-light)"/>
+    <rect width="420" height="332" fill="url(#p-shadow)"/>
+    <g filter="url(#p-soft)" fill="none" stroke-linecap="round">
+      <path d="M196 140 Q186 220 166 300" stroke="#000" stroke-width="6" opacity="0.6"/>
+      <path d="M226 140 Q236 220 256 300" stroke="#000" stroke-width="6" opacity="0.6"/>
+      <path d="M211 182 Q214 240 208 304" stroke="#000" stroke-width="5" opacity="0.5"/>
+      <path d="M182 150 Q170 220 150 296" stroke="#000" stroke-width="5" opacity="0.45"/>
+      <path d="M234 146 Q246 220 266 298" stroke="#a070e0" stroke-width="3" opacity="0.4"/>
+      <path d="M252 150 Q264 220 282 296" stroke="#a070e0" stroke-width="2.5" opacity="0.35"/>
+      <path d="M216 186 Q222 240 220 300" stroke="#8a5cc8" stroke-width="2" opacity="0.25"/>
+    </g>
+    <rect x="100" y="230" width="220" height="80" fill="url(#p-hem)"/>
+  </g>
+
+  <!-- rim light from the orb along the robe's right edge -->
+  <path d="M242 118 C260 130 270 160 274 200 C280 240 290 268 302 300" fill="none" stroke="#b58bff" stroke-width="3" opacity="0.55" filter="url(#p-soft)"/>
+  <path d="M242 118 C260 130 270 160 274 200 C280 240 290 268 302 300" fill="none" stroke="#d6b8ff" stroke-width="0.9" opacity="0.8"/>
+  <path d="M178 118 C176 96 186 72 210 70 C234 72 244 96 242 118" fill="none" stroke="#7a48b8" stroke-width="2" opacity="0.8"/>
+  <path d="M212 70 C234 72 244 96 242 118" fill="none" stroke="#e0c8ff" stroke-width="0.8" opacity="0.7"/>
+
+  <!-- ========== Hood, with a skull face barely visible inside ========== -->
+  <path fill="url(#p-void)" d="M210 84 C196 86 190 100 192 116 C196 126 204 132 210 132 C216 132 224 126 228 116 C230 100 224 86 210 84 Z"/>
+  <g fill="none" stroke="#b894e6" stroke-width="0.9" opacity="0.28" stroke-linecap="round">
+    <path d="M198 116 Q202 122 206 120 M222 116 Q218 122 214 120"/>
+    <path d="M204 124 Q210 127 216 124"/>
+    <path d="M206 124 V127 M208.6 124.6 V127.6 M211.4 124.6 V127.6 M214 124 V127"/>
+    <path d="M210 114 L208.5 118 H211.5 Z"/>
+  </g>
+  <!-- eyes -->
+  <g fill="#9a5cf0" opacity="0.9" filter="url(#p-bloom-big)">
+    <circle cx="202" cy="110" r="5"/>
+    <circle cx="218" cy="110" r="5"/>
+  </g>
+  <g fill="#e6ccff" filter="url(#p-bloom)">
+    <circle cx="202" cy="110" r="2.4"/>
+    <circle cx="218" cy="110" r="2.4"/>
+  </g>
+  <g fill="#fff">
+    <circle cx="202" cy="110" r="1"/>
+    <circle cx="218" cy="110" r="1"/>
+  </g>
+
+  <!-- ========== Ribcage ========== -->
+  <path fill="#0a0510" d="M198 134 L210 176 L222 134 Z"/>
+  <g fill="none" stroke-linecap="round">
+    <path d="M201 143 Q210 147 219 143 M203 151 Q210 155 217 151 M205 159 Q210 162 215 159 M207 167 Q210 169 213 167" stroke="#1a1222" stroke-width="2.2"/>
+    <path d="M201 142 Q210 146 219 142 M203 150 Q210 154 217 150 M205 158 Q210 161 215 158 M207 166 Q210 168 213 166" stroke="url(#p-bone)" stroke-width="1.4"/>
+    <path d="M210 138 V170" stroke="url(#p-bone)" stroke-width="1.3"/>
+  </g>
+
+  <!-- belt of skulls -->
+  <path d="M150 181 Q210 197 270 181" fill="none" stroke="#000" stroke-width="4" opacity="0.6"/>
+  <path d="M150 180 Q210 196 270 180" fill="none" stroke="#2a1a3d" stroke-width="3"/>
+  <use href="#p-skull" transform="translate(186 186) scale(0.5)"/>
+  <use href="#p-skull" transform="translate(198 189) scale(0.5)"/>
+  <use href="#p-skull" transform="translate(210 190) scale(0.5)"/>
+  <use href="#p-skull" transform="translate(222 189) scale(0.5)"/>
+  <use href="#p-skull" transform="translate(234 186) scale(0.5)"/>
+
+  <!-- skull pauldrons with spikes -->
+  <path fill="url(#p-bone)" d="M168 118 L162 104 L174 114 Z M252 118 L258 104 L246 114 Z"/>
+  <path fill="#000" opacity="0.35" d="M168 118 L162 104 L166 116 Z"/>
+  <use href="#p-skull" transform="translate(180 124) scale(1.15)"/>
+  <use href="#p-skull" transform="translate(240 124) scale(1.15)"/>
+  <ellipse cx="246" cy="118" rx="8" ry="5" fill="#c89cff" opacity="0.25" filter="url(#p-soft)"/>
+
+  <!-- ========== Left arm gripping the staff ========== -->
+  <path fill="url(#p-robe)" d="M184 128 C166 122 148 104 136 88 L126 98 C140 120 160 140 178 150 Z"/>
+  <path fill="#000" opacity="0.4" d="M178 150 C160 140 140 120 126 98 L131 94 C146 116 164 134 182 144 Z"/>
+  <g stroke-linecap="round">
+    <path d="M121 91 H133 M120 97 H132 M121 103 H131" stroke="#2a2233" stroke-width="3"/>
+    <path d="M121 90 H133 M120 96 H132 M121 102 H131" stroke="url(#p-bone)" stroke-width="2"/>
+  </g>
+
+  <!-- ========== Burning skull atop the staff ========== -->
+  <ellipse cx="130" cy="20" rx="26" ry="30" fill="#7a3cd0" opacity="0.55" filter="url(#p-bloom-big)"/>
+  <use href="#p-skull" transform="translate(128 40) scale(1.4)"/>
+  <use href="#p-flame" fill="#7a3cd0" opacity="0.8" filter="url(#p-bloom)" transform="translate(-19 -3) scale(1.15)"/>
+  <use href="#p-flame" fill="#b36bff" filter="url(#p-bloom)"/>
+  <path fill="#f0e0ff" d="M128 26 C122 20 124 12 128 6 C130 12 134 16 133 21 C132 24 130 26 128 26 Z"/>
+
+  <!-- ========== Right arm raising the soul orb ========== -->
+  <path fill="url(#p-robe)" d="M236 128 C256 120 276 102 290 86 L300 94 C288 116 266 140 244 150 Z"/>
+  <path fill="url(#p-light)" d="M236 128 C256 120 276 102 290 86 L300 94 C288 116 266 140 244 150 Z"/>
+  <path d="M238 127 C258 119 277 101 290 86" fill="none" stroke="#e0c8ff" stroke-width="0.9" opacity="0.7"/>
+
+  <!-- the orb's glow and light rays -->
+  <circle cx="298" cy="48" r="48" fill="#b27bff" opacity="0.5" filter="url(#p-bloom-big)"/>
+  <g fill="#d8b8ff" opacity="0.14" filter="url(#p-wisp)">
+    <path d="M298 48 L380 0 L392 14 Z"/>
+    <path d="M298 48 L230 0 L246 -4 Z"/>
+    <path d="M298 48 L420 70 L416 86 Z"/>
+    <path d="M298 48 L260 120 L246 112 Z"/>
+  </g>
+
+  <!-- bony hand, lit hard by the orb -->
+  <ellipse cx="296" cy="84" rx="5" ry="6" fill="url(#p-bone-lit)"/>
+  <g stroke-linecap="round" fill="none">
+    <path d="M293 81 L287 67 M296 79 L294 63 M299 79 L301 63 M302 81 L308 67 M303 87 L311 83" stroke="#3a2e48" stroke-width="3"/>
+    <path d="M292 80 L286 66 M295 78 L293 62 M298 78 L300 62 M301 80 L307 66 M302 86 L310 82" stroke="url(#p-bone-lit)" stroke-width="2"/>
+  </g>
+
+  <!-- orb with swirling energy -->
+  <circle cx="298" cy="48" r="14" fill="url(#p-orb)" filter="url(#p-bloom)"/>
+  <g transform="translate(298 48)" fill="none" stroke="#e2c8ff" stroke-width="1" opacity="0.55" filter="url(#p-wisp)">
+    <ellipse rx="22" ry="7" transform="rotate(20)"/>
+    <ellipse rx="20" ry="6" transform="rotate(-35)"/>
+    <ellipse rx="24" ry="5" transform="rotate(75)"/>
+  </g>
+  <circle cx="294" cy="44" r="3.5" fill="#fff" opacity="0.9"/>
+
+  <!-- souls spiralling off the orb -->
+  <g fill="none" stroke="#d2b2ff" stroke-width="2" stroke-linecap="round" opacity="0.5" filter="url(#p-wisp)">
+    <path d="M298 46 C318 30 326 14 346 4"/>
+    <path d="M296 44 C282 24 292 10 276 0"/>
+    <path d="M300 50 C330 52 350 40 372 44"/>
+    <path d="M300 52 C320 66 344 64 360 78" stroke-width="1.2"/>
+  </g>
+  <ellipse cx="376" cy="44" rx="6" ry="8" fill="#d8c0ff" opacity="0.28" filter="url(#p-wisp)"/>
+  <g fill="#0a0610" opacity="0.55">
+    <circle cx="374" cy="42" r="1.3"/><circle cx="378.4" cy="42" r="1.3"/><ellipse cx="376" cy="47" rx="1.2" ry="1.8"/>
+  </g>
+
+  <!-- ========== Foreground bones, half-sunk in fog ========== -->
+  <g opacity="0.9">
+    <use href="#p-skull" transform="translate(52 318) scale(1.1) rotate(-12)"/>
+    <use href="#p-skull" transform="translate(160 322) scale(0.9) rotate(8)"/>
+    <use href="#p-skull" transform="translate(268 320) rotate(-5)"/>
+    <use href="#p-skull" transform="translate(378 316) scale(1.2) rotate(10)"/>
+    <use href="#p-bonebit" transform="translate(96 322) rotate(20)"/>
+    <use href="#p-bonebit" transform="translate(212 326) rotate(-10)"/>
+    <use href="#p-bonebit" transform="translate(320 324) rotate(35)"/>
+    <use href="#p-bonebit" transform="translate(30 326) rotate(-40)"/>
+    <use href="#p-bonebit" transform="translate(236 316) rotate(70) scale(0.8)"/>
+  </g>
+  <rect x="0" y="300" width="420" height="32" fill="#1a0e28" opacity="0.35"/>
+  <g mask="url(#p-mask-ground)" opacity="0.4">
+    <rect x="0" y="240" width="420" height="92" filter="url(#p-fog2)"/>
+  </g>
+
+  <!-- ========== Color grade, vignette, grain ========== -->
+  <rect width="420" height="332" fill="#3a1466" opacity="0.18" style="mix-blend-mode:soft-light"/>
+  <rect width="420" height="332" fill="url(#p-vignette)"/>
+  <rect width="420" height="332" filter="url(#p-grain)" style="mix-blend-mode:overlay"/>
+</svg>
