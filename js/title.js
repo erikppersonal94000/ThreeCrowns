@@ -230,6 +230,8 @@
 
   // ---------- Main loop ----------
   function frame(t) {
+    // stop all particle work once we're leaving through the smoke
+    if (root.classList.contains("smoke-leaving")) return;
     const rects = getRects();
     if (particles.length < MAX_PARTICLES) {
       for (const k of lit) SPAWN[k]();
@@ -344,7 +346,7 @@
   root.addEventListener("mouseleave", () => clearFocus(300));
 
   // Don't hide the UI while the pointer is on a button
-   document.querySelectorAll("button, a").forEach((btn) => {
+    document.querySelectorAll("button:not(.splash), a").forEach((btn) => {
     btn.addEventListener("pointerenter", () => { overUI = true; clearTimeout(idleTimer); });
     btn.addEventListener("pointerleave", () => { overUI = false; armIdle(); });
   });
@@ -381,5 +383,28 @@
   resize();
   window.addEventListener("resize", resize);
   if (!reduceMotion) requestAnimationFrame(frame);
-  (document.fonts ? document.fonts.ready : Promise.resolve()).then(intro);
+ 
+    const fontsReady = document.fonts ? document.fonts.ready : Promise.resolve();
+  const splash = document.getElementById("splash");
+  const TITLE_THEME = "audio/title-theme.mp3";
+
+  if (splash && !sessionStorage.getItem("tc-begun")) {
+    // First visit this session: show the splash, start music and intro on click
+    fontsReady.then(() => splash.classList.add("is-shown"));
+    let begun = false;
+    splash.addEventListener("click", () => {
+      if (begun) return;
+      begun = true;
+      sessionStorage.setItem("tc-begun", "1");
+      GameAudio.music(TITLE_THEME);
+      splash.classList.add("is-leaving");
+      setTimeout(() => { splash.remove(); intro(); }, 900);
+    });
+  } else {
+    // Already clicked in once this visit (e.g. coming back from Duskmoor)
+    splash?.remove();
+    GameAudio.music(TITLE_THEME);
+    fontsReady.then(intro);
+  }
+
 })();
