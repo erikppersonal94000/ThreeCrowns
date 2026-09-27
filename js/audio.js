@@ -5,7 +5,7 @@
 // Also adds a mute button to the bottom-left corner of the page.
 (() => {
   const MUTE_KEY = "tc-muted";
-  const MUSIC_VOLUME = 0.15;
+  const MUSIC_VOLUME = 0.05;
 
   let muted = false;
   try { muted = localStorage.getItem(MUTE_KEY) === "1"; } catch (e) {}
@@ -66,6 +66,86 @@
     const a = new Audio(src);
     a.volume = volume;
     a.play().catch(() => {});
+  }
+
+  // ---------- Smoke whoosh (made in code, no audio file needed) ----------
+  const SMOKE_VOLUME = 0.1; // raise or lower to taste
+  let ctx = null;
+  let noiseBuf = null;
+
+  function audioCtx() {
+    if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if (ctx.state === "suspended") ctx.resume();
+    return ctx;
+  }
+
+  // 4 seconds of brown noise (a deep, soft rushing sound), made once and reused
+  function brownNoise(c) {
+    if (noiseBuf) return noiseBuf;
+    const len = c.sampleRate * 4;
+    noiseBuf = c.createBuffer(2, len, c.sampleRate);
+    for (let ch = 0; ch < 2; ch++) {
+      const d = noiseBuf.getChannelData(ch);
+      let last = 0;
+      for (let i = 0; i < len; i++) {
+        last = (last + 0.02 * (Math.random() * 2 - 1)) / 1.02;
+        d[i] = last * 3.5;
+      }
+    }
+    return noiseBuf;
+  }
+
+  // Timed to the smoke: swells as it rises (0–1.3s), settles while the
+  // screen is covered, then exhales as it lifts away (~1.9–3.6s)
+  function smoke(volume = SMOKE_VOLUME) {
+    if (muted) return;
+    const c = audioCtx();
+    const t = c.currentTime;
+    const buf = brownNoise(c);
+
+    const out = c.createGain();
+    out.gain.value = volume;
+    out.connect(c.destination);
+
+    // Layer 1: the rushing whoosh (noise through a sweeping band filter)
+    const rush = c.createBufferSource();
+    rush.buffer = buf;
+    const band = c.createBiquadFilter();
+    band.type = "bandpass";
+    band.Q.value = 0.7;
+    band.frequency.setValueAtTime(250, t);
+    band.frequency.exponentialRampToValueAtTime(1400, t + 1.2); // rising
+    band.frequency.exponentialRampToValueAtTime(500, t + 1.9);  // covered
+    band.frequency.exponentialRampToValueAtTime(900, t + 2.8);  // lifting away
+    band.frequency.exponentialRampToValueAtTime(300, t + 3.6);
+    const rushGain = c.createGain();
+    rushGain.gain.setValueAtTime(0.0001, t);
+    rushGain.gain.exponentialRampToValueAtTime(1, t + 1.1);
+    rushGain.gain.exponentialRampToValueAtTime(0.45, t + 1.9);
+    rushGain.gain.exponentialRampToValueAtTime(0.7, t + 2.6);
+    rushGain.gain.exponentialRampToValueAtTime(0.0001, t + 3.6);
+    const pan = c.createStereoPanner();
+    pan.pan.setValueAtTime(-0.4, t);
+    pan.pan.linearRampToValueAtTime(0.4, t + 3.6); // drifts across the speakers
+    rush.connect(band).connect(rushGain).connect(pan).connect(out);
+
+    // Layer 2: a low rumble underneath
+    const rumble = c.createBufferSource();
+    rumble.buffer = buf;
+    rumble.playbackRate.value = 0.5;
+    const low = c.createBiquadFilter();
+    low.type = "lowpass";
+    low.frequency.value = 120;
+    const rumbleGain = c.createGain();
+    rumbleGain.gain.setValueAtTime(0.0001, t);
+    rumbleGain.gain.exponentialRampToValueAtTime(1.4, t + 1.2);
+    rumbleGain.gain.exponentialRampToValueAtTime(0.0001, t + 3.2);
+    rumble.connect(low).connect(rumbleGain).connect(out);
+
+    rush.start(t);
+    rush.stop(t + 3.7);
+    rumble.start(t);
+    rumble.stop(t + 3.7);
   }
 
   // ---------- Mute button ----------
@@ -130,5 +210,5 @@
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", addButton);
   else addButton();
 
-  window.GameAudio = { music, fadeOut, sfx, setMuted, isMuted: () => muted };
+  window.GameAudio = { music, fadeOut, sfx, smoke, setMuted, isMuted: () => muted };
 })();

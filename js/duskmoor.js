@@ -137,7 +137,11 @@
 
   Screens.register("duskmoor", {
     // Change to "audio/duskmoor-theme.mp3" once you have the track
-    music: null,
+    music: "audio/duskmoor-theme.mp3",
+    musicVolume: 0.05, // Duskmoor theme only; lower = quieter
+
+    // smoke whoosh as you enter
+    sound: () => GameAudio.smoke(),
 
     enter() {
       // Reset, then bring everything in once the smoke has mostly cleared

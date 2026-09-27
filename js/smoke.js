@@ -9,7 +9,7 @@
   const REVEAL_MS = 1500;     // how long the lift takes
   const PER_ROW = 8;          // puffs per row along an edge
   const WISPS = 4;            // loose wisps ahead of / behind the curtain
-  const BASE = "#07050a";     // curtain color (near-black violet)
+  const BASE = "#110a1a";     // curtain color (deep smoky purple)
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -25,13 +25,22 @@
     .smoke-veil {
       position: absolute; left: 0; right: 0; top: 0;
       height: 220vh;
-      background: linear-gradient(to bottom,
-        rgba(7, 5, 10, 0) 0%,
-        rgba(14, 9, 20, .75) 12%,
-        ${BASE} 22%,
-        ${BASE} 78%,
-        rgba(14, 9, 20, .75) 88%,
-        rgba(7, 5, 10, 0) 100%);
+      background:
+        /* drifting smoke patches through the middle of the curtain */
+        radial-gradient(ellipse 60% 9% at 18% 30%, rgba(92, 68, 124, .55), transparent 70%),
+        radial-gradient(ellipse 55% 8% at 78% 36%, rgba(80, 58, 110, .5), transparent 70%),
+        radial-gradient(ellipse 70% 10% at 45% 45%, rgba(70, 48, 98, .55), transparent 70%),
+        radial-gradient(ellipse 50% 8% at 88% 52%, rgba(96, 72, 128, .45), transparent 70%),
+        radial-gradient(ellipse 65% 9% at 22% 58%, rgba(76, 54, 104, .5), transparent 70%),
+        radial-gradient(ellipse 60% 9% at 65% 67%, rgba(88, 64, 118, .45), transparent 70%),
+        /* the curtain itself: soft at both ends, solid in the middle */
+        linear-gradient(to bottom,
+          rgba(7, 5, 10, 0) 0%,
+          rgba(20, 12, 30, .75) 12%,
+          ${BASE} 22%,
+          ${BASE} 78%,
+          rgba(20, 12, 30, .75) 88%,
+          rgba(7, 5, 10, 0) 100%);
       transform: translate3d(0, 100vh, 0);
       will-change: transform;
     }
@@ -92,6 +101,10 @@
   ];
   const DEEP = ["rgba(18, 12, 28, .95)", "rgba(12, 8, 18, .75)"];
   const WISP = ["rgba(120, 100, 150, .28)", "rgba(52, 38, 72, .22)"];
+  const MID  = [
+    ["rgba(104, 80, 136, .4)", "rgba(46, 32, 66, .35)"],
+    ["rgba(86, 64, 116, .4)",  "rgba(38, 26, 56, .35)"],
+  ];
 
   function addPuff(veil, { x, t, s, c, billow }) {
     const p = document.createElement("div");
@@ -136,6 +149,8 @@
     row(veil, WISPS, 2, 11, 20, 34, WISP, true);
     row(veil, PER_ROW, 11, 21, 34, 52, LIGHT, true);
     row(veil, PER_ROW, 19, 27, 38, 56, DEEP, false);
+    // body: slow billows so it never goes still while covered
+    row(veil, 6, 32, 68, 50, 70, MID, true);
     // trailing edge (bottom)
     row(veil, PER_ROW, 73, 81, 38, 56, DEEP, false);
     row(veil, PER_ROW, 79, 89, 34, 52, LIGHT, true);

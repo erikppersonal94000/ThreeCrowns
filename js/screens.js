@@ -40,9 +40,12 @@
     const next = handlers[name] || {};
 
     try {
+      // Transition sound for the screen we're entering (optional)
+      next.sound?.();
+
       // Music starts changing right away so it crossfades under the smoke
       if (window.GameAudio && "music" in next) {
-        if (next.music) GameAudio.music(next.music);
+      if (next.music) GameAudio.music(next.music, { volume: next.musicVolume ?? 0.15 });
         else GameAudio.fadeOut(1200);
       }
 
