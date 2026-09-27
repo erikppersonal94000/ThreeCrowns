@@ -26,11 +26,49 @@
       label: "Hero",
     },
 
-    // Blank attack card frames, one per rarity. Fill these in later.
-    { id: "attack-common",    type: "attack", kingdom: "dark", rarity: "common",    label: "Common" },
-    { id: "attack-uncommon",  type: "attack", kingdom: "dark", rarity: "uncommon",  label: "Uncommon" },
-    { id: "attack-rare",      type: "attack", kingdom: "dark", rarity: "rare",      label: "Rare" },
-    { id: "attack-legendary", type: "attack", kingdom: "dark", rarity: "legendary", label: "Legendary" },
+      // Duskmoor attack cards. Health, attack, effects and descriptions to come.
+    {
+      id: "skeleton",
+      type: "attack",
+      kingdom: "dark",
+      rarity: "common",
+      name: "Skeleton",
+      art: "graphics/cards/skeleton.jpg",
+      artZoom: 1.2,      // 1.1 = a little closer, 1.3 = a lot closer
+      artShiftY: 1,      // positive moves the picture down, negative moves it up
+      label: "Common",
+    },
+    {
+      id: "wight",
+      type: "attack",
+      kingdom: "dark",
+      rarity: "uncommon",
+      name: "Wight",
+      art: "graphics/cards/wight.jpg",
+      artZoom: 1.1,      // 1.1 = a little closer, 1.3 = a lot closer
+      artShiftY: 1,      // positive moves the picture down, negative moves it up
+      label: "Uncommon",
+    },
+    {
+      id: "raised-werewolf",
+      type: "attack",
+      kingdom: "dark",
+      rarity: "rare",
+      name: "Raised Werewolf",
+      art: "graphics/cards/raised-werewolf.jpg",
+      artZoom: 1.2,      // 1.1 = a little closer, 1.3 = a lot closer
+      artShiftY: 0,      // positive moves the picture down, negative moves it up
+      label: "Rare",
+    },
+    {
+      id: "alfarr-the-seer",
+      type: "attack",
+      kingdom: "dark",
+      rarity: "legendary",
+      name: "Alfarr the Seer",
+      art: "graphics/cards/alfarr-the-seer.svg",
+      label: "Legendary",
+    },
   ];
 
   // =====================================================================
@@ -206,17 +244,26 @@
     return Array.from({ length: n }, (_, i) => facetGem(start + i * gap, 670, 0.95, GEM_COLORS[rarity], cls)).join("");
   };
 
-  // Art (or an empty backdrop) inside a window shape, with vignette and inner shadow
-  const artLayer = (card, win, [x, y, w, h], uid, emptyFill) => `
+  // Art (or an empty backdrop) inside a window shape, with vignette and inner shadow.
+  // Optional on a card: artZoom (1 = normal, 1.2 = 20% closer),
+  // artShiftX / artShiftY (move the picture in card pixels while zoomed).
+  const artLayer = (card, win, [x, y, w, h], uid, emptyFill) => {
+    const z = card.artZoom || 1;
+    const zw = w * z;
+    const zh = h * z;
+    const zx = x - (zw - w) / 2 + (card.artShiftX || 0);
+    const zy = y - (zh - h) / 2 + (card.artShiftY || 0);
+
+    return `
     <clipPath id="${uid}-win"><path d="${win}"/></clipPath>
     ${card.art
-      ? `<image href="${card.art}" x="${x}" y="${y}" width="${w}" height="${h}" preserveAspectRatio="${card.artAlign || "xMidYMid"} slice" clip-path="url(#${uid}-win)"/>`
+      ? `<image href="${card.art}" x="${zx}" y="${zy}" width="${zw}" height="${zh}" preserveAspectRatio="${card.artAlign || "xMidYMid"} slice" clip-path="url(#${uid}-win)"/>`
       : `<path d="${win}" fill="${emptyFill}"/>`}
     <path d="${win}" fill="url(#cf-art-vignette)"/>
     <g clip-path="url(#${uid}-win)">
       <path d="${win}" fill="none" stroke="#000" stroke-width="22" opacity=".85" filter="url(#fb-blur4)"/>
     </g>`;
-
+  };
   const plate = (shape, inner, fill, innerFill, rim, fx) => `
     <path d="${shape}" fill="${fill}" ${fx}/>
     <path d="${inner}" fill="${innerFill}"/>
@@ -337,7 +384,7 @@
       <rect x="21" y="21" width="458" height="658" rx="11" fill="none" stroke="#b27bff" stroke-width=".9" opacity=".7"/>
 
       ${plate(PLATE, PLATE_IN, "url(#ob-obsidian)", "url(#fb-enamel)", "#c49cff", FX)}
-      
+
       ${textPanel("url(#fb-inset)", "url(#ob-obsidian)", FX)}
       ${seal("url(#ob-obsidian)", "url(#fb-enamel)", FX, "#c49cff")}
       <ellipse cx="440" cy="650" rx="40" ry="44" fill="#8a4dd6" opacity=".3" filter="url(#fb-blur4)"/>
