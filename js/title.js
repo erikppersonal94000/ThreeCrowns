@@ -12,6 +12,13 @@
   const IDLE_MS = 3500;       // UI fades out after this long without mouse movement
   const TOUCH_IDLE_MS = 8000; // longer on touch screens
 
+  // Where each kingdom's button leads. Change these as real pages get built.
+  const KINGDOM_PAGES = {
+  dark: "duskmoor.html",   // Duskmoor
+    // mountain: "stonehelm.html",
+    // snow: "frostvale.html",
+  };
+
   // ---------- Canvas ----------
   const canvas = document.getElementById("particles");
   const ctx = canvas.getContext("2d");
@@ -348,7 +355,11 @@
     const btn = plate.querySelector(".plate-btn");
     btn.addEventListener("focus", () => setFocus(k));
     btn.addEventListener("blur", () => clearFocus(400));
-    btn.addEventListener("click", () => console.log(`Begin as: ${k}`));
+    btn.addEventListener("click", () => {
+      const url = KINGDOM_PAGES[k];
+      if (url) Smoke.cover(url);
+      else console.log(`${k} isn't built yet`);
+    });
   });
 
   // Corner menu (placeholder until those screens exist)
