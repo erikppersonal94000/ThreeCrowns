@@ -104,20 +104,6 @@ main {
   justify-content: center;
 }
 
-.card-slot {
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-}
-
-.card-caption {
-  font-family: var(--font-caps);
-  font-size: 1.05rem;
-  color: var(--violet-soft);
-}
-
 /* ============ Card ============ */
 .card {
   --w: min(320px, 82vw);
@@ -173,8 +159,12 @@ main {
   font-size: 5.4cqw;
   line-height: 1;
   white-space: nowrap;
-  color: var(--ink);
-  text-shadow: 0 1px 0 #000, 0 0 3cqw rgba(138, 77, 214, .8);
+  /* pale enamel-silver lettering */
+  color: transparent;
+  background: linear-gradient(180deg, #fbf6ff 0%, #d8c2f5 50%, #8a64c0 100%);
+  -webkit-background-clip: text;
+          background-clip: text;
+  filter: drop-shadow(0 1px 0 #000) drop-shadow(0 0 5px rgba(160, 100, 255, .6));
 }
 
 .card-type {
@@ -190,7 +180,7 @@ main {
   font-family: var(--font-caps);
   font-size: 3.3cqw;
   letter-spacing: .04em;
-  color: var(--violet-soft);
+  color: #c9a8f0;
 }
 
 .card-text {
@@ -216,7 +206,7 @@ main {
   font-family: var(--font-dark);
   font-weight: 800;
   font-size: 3.7cqw;
-  color: #d9c2ff;
+  color: #e2cfff;
 }
 
 .soul-cost {
@@ -238,11 +228,11 @@ main {
 
 .card-flavor {
   padding-top: 1.4cqw;
-  border-top: 1px solid rgba(138, 77, 214, .3);
+  border-top: 1px solid rgba(201, 168, 240, .25);
   font-style: italic;
   font-size: 2.9cqw;
   text-align: center;
-  color: rgba(181, 139, 220, .8);
+  color: rgba(201, 168, 240, .8);
 }
 
 .card-health,
@@ -275,7 +265,7 @@ main {
 .card:hover .card-sheen,
 .card.is-tilting .card-sheen { opacity: 1; }
 
-/* Slow pulse on the crest eyes and gems */
+/* Slow pulse on the skull eyes, gems and seal stars */
 .cf-eye-glow,
 .cf-gem { animation: pulse 3s ease-in-out infinite; }
 
@@ -335,15 +325,7 @@ main {
   outline: none;
 }
 
-/* ============ Reduced motion ============ */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation: none !important;
-    transition: none !important;
-  }
-}
-
-/* ============ Comparison captions ============ */
+/* ============ Labels under each card ============ */
 .card-slot {
   margin: 0;
   display: flex;
@@ -358,49 +340,54 @@ main {
   color: var(--violet-soft);
 }
 
-/* ============ Style B: painted enamel & silver ============ */
-.card[data-frame="b"] .card-name {
-  color: transparent;
-  background: linear-gradient(180deg, #fbf6ff 0%, #d8c2f5 50%, #8a64c0 100%);
-  -webkit-background-clip: text;
-          background-clip: text;
-  text-shadow: none;
-  filter: drop-shadow(0 1px 0 #000) drop-shadow(0 0 5px rgba(160, 100, 255, .6));
+/* ============ Attack number (sits on the blade emblem) ============ */
+.card-attack {
+  position: absolute;
+  left: 88%;
+  top: 92.57%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-dark);
+  font-weight: 800;
+  font-size: 6.4cqw;
+  line-height: 1;
+  color: #fff;
+  text-shadow: 0 1px 0 #000, 0 0 2cqw rgba(0, 0, 0, .9);
 }
-.card[data-frame="b"] .card-type    { color: #c9a8f0; }
-.card[data-frame="b"] .ability-name { color: #e2cfff; }
-.card[data-frame="b"] .card-flavor  { color: rgba(201, 168, 240, .8); border-top-color: rgba(201, 168, 240, .25); }
 
-/* ============ Style C: realistic engraved metal ============ */
-.card[data-frame="c"] .card-face {
-  box-shadow: 0 24px 48px rgba(0, 0, 0, .8), 0 0 18px rgba(0, 0, 0, .6);
+/* ============ Rarity differences ============ */
+/* Common: no foil, no purple glow */
+.card[data-rarity="common"] .card-sheen { display: none; }
+.card[data-rarity="common"] .card-face  { box-shadow: 0 24px 48px rgba(0, 0, 0, .75); }
+
+/* Uncommon: faint foil */
+.card[data-rarity="uncommon"]:hover .card-sheen,
+.card[data-rarity="uncommon"].is-tilting .card-sheen { opacity: .45; }
+.card[data-rarity="uncommon"] .card-face { box-shadow: 0 24px 48px rgba(0, 0, 0, .75), 0 0 20px rgba(120, 50, 190, .2); }
+
+/* Legendary: foil always faintly on, magenta glow, drifting wisps */
+.card[data-rarity="legendary"] .card-sheen { opacity: .3; }
+.card[data-rarity="legendary"]:hover .card-sheen,
+.card[data-rarity="legendary"].is-tilting .card-sheen { opacity: 1; }
+.card[data-rarity="legendary"] .card-face {
+  box-shadow: 0 24px 48px rgba(0, 0, 0, .75), 0 0 44px rgba(210, 79, 208, .4);
 }
-.card[data-frame="c"] .card-name {
-  font-weight: 600;
-  letter-spacing: .02em;
-  color: transparent;
-  background: linear-gradient(180deg, #ece5d7 0%, #b0a695 50%, #6d6456 100%);
-  -webkit-background-clip: text;
-          background-clip: text;
-  text-shadow: none;
-  /* engraved: dark edge above, faint highlight below */
-  filter: drop-shadow(0 -1px 0 rgba(0, 0, 0, .95)) drop-shadow(0 1px 0 rgba(255, 255, 255, .12));
+
+.lg-rim { animation: pulse 3s ease-in-out infinite; }
+
+.lg-wisp {
+  opacity: 0;
+  animation: wisp 7s ease-in-out infinite;
 }
-.card[data-frame="c"] .card-type    { color: #a89fb4; letter-spacing: .08em; }
-.card[data-frame="c"] .card-text    { color: #e6dfd2; text-shadow: 0 1px 1px rgba(0, 0, 0, .8); }
-.card[data-frame="c"] .ability-name { color: #dcd2bf; }
-.card[data-frame="c"] .card-flavor  { color: #a399ae; border-top-color: rgba(138, 122, 150, .35); }
-.card[data-frame="c"] .soul-cost {
-  background: radial-gradient(circle at 35% 30%, #caa0ff, #6d2fc0 45%, #12041f);
-  box-shadow: 0 0 0 .5cqw #2a2430, 0 .4cqw .8cqw rgba(0, 0, 0, .8);
+@keyframes wisp {
+  0%   { opacity: 0;  transform: translateY(0); }
+  20%  { opacity: .9; }
+  100% { opacity: 0;  transform: translateY(-80px); }
 }
-.card[data-frame="c"] .card-health {
-  color: #f4ecff;
-  text-shadow: 0 1px 2px #000, 0 0 6px rgba(0, 0, 0, .9);
-}
-/* a subtle light glint instead of the holographic foil */
-.card[data-frame="c"] .card-sheen {
-  mix-blend-mode: soft-light;
-  background:
-    radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(255, 255, 255, .35), transparent 35%);
+
+/* ============ Reduced motion ============ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
 }
