@@ -4,9 +4,10 @@
   // =====================================================================
   // Card data
   // Add new cards here; the page builds itself from this list.
-  // Leave out "cost" for heroes (the Duskmoor seal shows instead).
-  // Optional: artAlign ("xMidYMin" | "xMidYMid" | "xMidYMax") picks which
-  // part of the art stays visible when it's cropped to the arch.
+  // Heroes: type "hero". Attack cards: type "attack" + rarity
+  // ("common" | "uncommon" | "rare" | "legendary").
+  // Optional: art, artAlign ("xMidYMin" | "xMidYMid" | "xMidYMax"),
+  //           cost, attack, abilities, flavor, typeLine.
   // =====================================================================
   const CARDS = [
     {
@@ -25,7 +26,7 @@
       label: "Hero",
     },
 
-    // Blank attack card frames, one per rarity. Fill in name/art/cost/attack/abilities later.
+    // Blank attack card frames, one per rarity. Fill these in later.
     { id: "attack-common",    type: "attack", kingdom: "dark", rarity: "common",    label: "Common" },
     { id: "attack-uncommon",  type: "attack", kingdom: "dark", rarity: "uncommon",  label: "Uncommon" },
     { id: "attack-rare",      type: "attack", kingdom: "dark", rarity: "rare",      label: "Rare" },
@@ -33,7 +34,7 @@
   ];
 
   // =====================================================================
-  // Frame layout (500 x 700)
+  // Shared layout (every card is 500 x 700)
   // =====================================================================
   const ARCH = "M40 392 V160 Q40 100 250 70 Q460 100 460 160 V392 Z";
   const INNER = "M30 16 H470 A14 14 0 0 1 484 30 V670 A14 14 0 0 1 470 684 H30 A14 14 0 0 1 16 670 V30 A14 14 0 0 1 30 16 Z";
@@ -64,16 +65,31 @@
     "M120 76 C116 62 128 54 138 58 C146 62 142 72 134 70 " +
     "M50 128 l-7 -3 M60 110 l-6 -6 M92 86 l-3 -7 M140 64 l-2 -7";
 
-  const FILIGREE = `
+  const vines = (color, width) => `
     <g fill="none" stroke-linecap="round">
-      <path d="${VINE}" stroke="#000" stroke-width="2.4" opacity=".7" transform="translate(0 1)"/>
-      <path d="${VINE}" stroke="#8f76b8" stroke-width="1.2" opacity=".8"/>
+      <path d="${VINE}" stroke="#000" stroke-width="${width + 1.2}" opacity=".7" transform="translate(0 1)"/>
+      <path d="${VINE}" stroke="${color}" stroke-width="${width}" opacity=".9"/>
       <g transform="translate(500 0) scale(-1 1)">
-        <path d="${VINE}" stroke="#000" stroke-width="2.4" opacity=".7" transform="translate(0 1)"/>
-        <path d="${VINE}" stroke="#8f76b8" stroke-width="1.2" opacity=".8"/>
+        <path d="${VINE}" stroke="#000" stroke-width="${width + 1.2}" opacity=".7" transform="translate(0 1)"/>
+        <path d="${VINE}" stroke="${color}" stroke-width="${width}" opacity=".9"/>
       </g>
     </g>`;
 
+  // Faceted gem in any three colors (light, mid, dark)
+  const facetGem = (x, y, s, [c0, c1, c2], cls = "") => `
+    <g transform="translate(${x} ${y}) scale(${s})" class="${cls}">
+      <path d="M0 -9 L9 0 L0 9 L-9 0 Z" fill="${c2}"/>
+      <path d="M0 -9 L9 0 L0 0 Z" fill="${c0}"/>
+      <path d="M0 -9 L-9 0 L0 0 Z" fill="${c1}"/>
+      <path d="M-9 0 L0 9 L0 0 Z" fill="${c2}" opacity=".8"/>
+      <path d="M9 0 L0 9 L0 0 Z" fill="${c1}" opacity=".8"/>
+      <path d="M0 -9 L9 0 L0 9 L-9 0 Z" fill="none" stroke="#0a0610" stroke-width="1"/>
+      <circle cx="2" cy="-3" r="1.2" fill="#fff" opacity=".9"/>
+    </g>`;
+
+  // =====================================================================
+  // HERO card front (Morvane)
+  // =====================================================================
   const HEART_FACETS = `
     <g clip-path="url(#fb-heart-clip)">
       <path d="M440 632 L402 640 L421 620 Z" fill="#fff" opacity=".28"/>
@@ -82,10 +98,10 @@
       <path d="M440 632 L478 640 L440 686 Z" fill="#000" opacity=".08"/>
     </g>`;
 
-  // Duskmoor seal: silver-rimmed crescent cradling a small skull, with a few stars
   const star = (x, y, s) =>
     `<path d="M${x} ${y - s} L${x + s * 0.25} ${y - s * 0.25} L${x + s} ${y} L${x + s * 0.25} ${y + s * 0.25} L${x} ${y + s} L${x - s * 0.25} ${y + s * 0.25} L${x - s} ${y} L${x - s * 0.25} ${y - s * 0.25} Z"/>`;
 
+  // Duskmoor seal: silver-rimmed crescent cradling a small skull, with a few stars
   const SIGIL = `
     <defs>
       <mask id="fb-moon-mask" maskUnits="userSpaceOnUse" x="30" y="30" width="72" height="72">
@@ -108,19 +124,14 @@
       ${star(78, 82, 1.8)}
     </g>`;
 
-  // =====================================================================
-  // Card front
-  // =====================================================================
   function frontSVG(card) {
     return `
     <svg class="card-svg" viewBox="0 0 500 700" aria-hidden="true">
       <rect width="500" height="700" rx="24" fill="#07050a"/>
 
-      <!-- inset metal panel around the art -->
       <path d="${INNER} ${ARCH}" fill="url(#fb-panel)" fill-rule="evenodd" filter="url(#fb-metalfx)"/>
-      ${FILIGREE}
+      ${vines("#8f76b8", 1.2)}
 
-      <!-- art with a soft inner shadow -->
       ${artImage(card)}
       <path d="${ARCH}" fill="url(#cf-art-vignette)"/>
       <g clip-path="url(#cf-arch)">
@@ -129,19 +140,15 @@
       <path d="${ARCH}" fill="none" stroke="url(#fb-metal)" stroke-width="12" filter="url(#fb-metalfx)"/>
       <path d="${ARCH}" fill="none" stroke="#b27bff" stroke-width="1.4" opacity=".9" filter="url(#fb-glow)"/>
 
-      <!-- outer frame -->
       <path d="${OUTER}" fill="url(#fb-metal)" fill-rule="evenodd" filter="url(#fb-metalfx)"/>
       <rect x="21" y="21" width="458" height="658" rx="11" fill="none" stroke="#7d5fb0" stroke-width=".8" opacity=".55"/>
 
-      <!-- vertebrae and corner bone clusters -->
       <g filter="url(#fb-bonefx)">
-        ${spine(8)}${spine(492)}
         ${crossed(460, 40)}${crossed(40, 660)}
       </g>
       <use href="#fb-skull" transform="translate(460 40) scale(.55)"/>
       <use href="#fb-skull" transform="translate(40 660) scale(.55)"/>
 
-      <!-- bone wings and horned crest -->
       <path d="${WINGS}" fill="none" stroke="#1a1222" stroke-width="6" stroke-linecap="round" transform="translate(0 1.5)"/>
       <path d="${WINGS}" fill="none" stroke="url(#fb-bone)" stroke-width="4" stroke-linecap="round" filter="url(#fb-bonefx)"/>
       <path d="${HORNS}" fill="url(#fb-horn)" filter="url(#fb-metalfx)"/>
@@ -149,14 +156,12 @@
             fill="none" stroke="#000" stroke-width=".7" opacity=".6"/>
       <use href="#fb-skull" x="250" y="36"/>
 
-      <!-- name plate with enamel inlay -->
       <path d="${PLATE}" fill="url(#fb-metal-h)" filter="url(#fb-metalfx)"/>
       <path d="${PLATE_IN}" fill="url(#fb-enamel)"/>
       <path d="${PLATE_IN}" fill="none" stroke="#c49cff" stroke-width=".8" opacity=".6"/>
       <use href="#fb-gem" transform="translate(34 414)"/>
       <use href="#fb-gem" transform="translate(466 414)"/>
 
-      <!-- text box -->
       <rect x="48" y="476" width="404" height="148" rx="6" fill="url(#fb-inset)" filter="url(#fb-canvasfx)"/>
       <g clip-path="url(#fb-tb-clip)">
         <rect x="48" y="476" width="404" height="148" rx="6" fill="none" stroke="#000" stroke-width="14" opacity=".8" filter="url(#fb-blur4)"/>
@@ -164,13 +169,11 @@
       <rect x="48" y="476" width="404" height="148" rx="6" fill="none" stroke="url(#fb-metal)" stroke-width="3" filter="url(#fb-metalfx)"/>
       <path d="${BRACKETS}" fill="none" stroke="url(#fb-bone)" stroke-width="3.2" stroke-linecap="round" filter="url(#fb-bonefx)"/>
 
-      <!-- seal: cost, or the Duskmoor sigil for heroes -->
       <circle cx="66" cy="66" r="36" fill="url(#fb-metal)" filter="url(#fb-metalfx)"/>
       <circle cx="66" cy="66" r="29" fill="url(#fb-enamel)"/>
       <circle cx="66" cy="66" r="32.5" fill="none" stroke="#c9b6e6" stroke-width="1.2" stroke-dasharray="1.5 4" opacity=".6"/>
       ${card.cost == null ? SIGIL : ""}
 
-      <!-- faceted crystal heart -->
       ${card.health != null ? `
         <ellipse cx="440" cy="650" rx="44" ry="40" fill="#8a4dd6" opacity=".35" filter="url(#fb-blur4)"/>
         <path d="${HEART}" fill="url(#cf-gem-radial)"/>
@@ -179,9 +182,246 @@
         <ellipse cx="424" cy="632" rx="7" ry="3" transform="rotate(-30 424 632)" fill="#fff" opacity=".6" filter="url(#fb-glow)"/>
         <path d="${HEART}" fill="none" stroke="url(#fb-bone)" stroke-width="4" filter="url(#fb-bonefx)"/>` : ""}
 
-      <!-- rarity gem -->
       <use href="#fb-gem" transform="translate(250 674) scale(1.4)"/>
     </svg>`;
+  }
+
+  // =====================================================================
+  // ATTACK card fronts. One frame per rarity.
+  // =====================================================================
+  const GEM_COLORS = {
+    common:    ["#b4aebb", "#77717f", "#3a3640"],  // dull stone
+    uncommon:  ["#fffaf0", "#d8ccb4", "#8a7e68"],  // bone-white
+    rare:      ["#e3c6ff", "#9b5ce6", "#2a0c4f"],  // violet
+    legendary: ["#ffd9f7", "#d24fd0", "#4a0c52"],  // magenta
+  };
+  const GEM_COUNT = { common: 1, uncommon: 2, rare: 3, legendary: 4 };
+
+  // Row of 1-4 gems at the bottom showing rarity
+  const gemRow = (rarity) => {
+    const n = GEM_COUNT[rarity];
+    const gap = 24;
+    const start = 250 - ((n - 1) * gap) / 2;
+    const cls = rarity === "rare" || rarity === "legendary" ? "cf-gem" : "";
+    return Array.from({ length: n }, (_, i) => facetGem(start + i * gap, 670, 0.95, GEM_COLORS[rarity], cls)).join("");
+  };
+
+  // Art (or an empty backdrop) inside a window shape, with vignette and inner shadow
+  const artLayer = (card, win, [x, y, w, h], uid, emptyFill) => `
+    <clipPath id="${uid}-win"><path d="${win}"/></clipPath>
+    ${card.art
+      ? `<image href="${card.art}" x="${x}" y="${y}" width="${w}" height="${h}" preserveAspectRatio="${card.artAlign || "xMidYMid"} slice" clip-path="url(#${uid}-win)"/>`
+      : `<path d="${win}" fill="${emptyFill}"/>`}
+    <path d="${win}" fill="url(#cf-art-vignette)"/>
+    <g clip-path="url(#${uid}-win)">
+      <path d="${win}" fill="none" stroke="#000" stroke-width="22" opacity=".85" filter="url(#fb-blur4)"/>
+    </g>`;
+
+  const plate = (shape, inner, fill, innerFill, rim, fx) => `
+    <path d="${shape}" fill="${fill}" ${fx}/>
+    <path d="${inner}" fill="${innerFill}"/>
+    ${rim ? `<path d="${inner}" fill="none" stroke="${rim}" stroke-width=".9" opacity=".8"/>` : ""}`;
+
+  const textPanel = (fill, rim, fx) => `
+    <rect x="48" y="476" width="404" height="148" rx="6" fill="${fill}"/>
+    <g clip-path="url(#fb-tb-clip)">
+      <rect x="48" y="476" width="404" height="148" rx="6" fill="none" stroke="#000" stroke-width="14" opacity=".7" filter="url(#fb-blur4)"/>
+    </g>
+    <rect x="48" y="476" width="404" height="148" rx="6" fill="none" stroke="${rim}" stroke-width="3" ${fx}/>`;
+
+  const seal = (fill, innerFill, fx, ring) => `
+    <circle cx="66" cy="66" r="36" fill="${fill}" ${fx}/>
+    <circle cx="66" cy="66" r="29" fill="${innerFill}"/>
+    ${ring ? `<circle cx="66" cy="66" r="32.5" fill="none" stroke="${ring}" stroke-width="1.2" stroke-dasharray="1.5 4" opacity=".75"/>` : ""}`;
+
+  // Attack emblem (bottom right), shaped like a blade
+  const BLADE = "M440 610 L476 644 L440 692 L404 644 Z";
+  const BLADE_IN = "M440 620 L466 644 L440 680 L414 644 Z";
+  const blade = (fill, innerFill, line, fx, lineFx = "") => `
+    <path d="${BLADE}" fill="${fill}" ${fx}/>
+    <path d="${BLADE_IN}" fill="${innerFill}"/>
+    <path d="${BLADE_IN}" fill="none" stroke="${line}" stroke-width="1.6" ${lineFx}/>
+    <path d="M422 632 H458" stroke="${line}" stroke-width="2" stroke-linecap="round" ${lineFx}/>`;
+
+  // ---------------- COMMON: rough grey stone ----------------
+  function commonFrame(card, uid) {
+    const WIN = "M40 72 H460 V392 H40 Z";
+    const OUT = "M10 0 H490 A10 10 0 0 1 500 10 V690 A10 10 0 0 1 490 700 H10 A10 10 0 0 1 0 690 V10 A10 10 0 0 1 10 0 Z";
+    const IN_ = "M22 16 H478 A6 6 0 0 1 484 22 V678 A6 6 0 0 1 478 684 H22 A6 6 0 0 1 16 678 V22 A6 6 0 0 1 22 16 Z";
+    const FX = 'filter="url(#st-stonefx)"';
+
+    return `
+      <rect width="500" height="700" rx="10" fill="#0c0b0e"/>
+      <path d="${IN_} ${WIN}" fill="#4a4852" fill-rule="evenodd" ${FX}/>
+      ${artLayer(card, WIN, [40, 72, 420, 320], uid, "url(#st-empty)")}
+      <path d="${WIN}" fill="none" stroke="url(#st-stone)" stroke-width="8" ${FX}/>
+
+      <path d="${OUT} ${IN_}" fill="url(#st-stone)" fill-rule="evenodd" ${FX}/>
+      <!-- chips and cracks -->
+      <path d="M0 210 L10 216 L4 224 M500 470 L490 476 L496 486 M180 0 L186 10 L194 4 M320 700 L326 690 L334 698 M0 540 L8 546"
+            fill="none" stroke="#1a191d" stroke-width="1.4"/>
+
+      ${plate("M42 388 H458 V440 H42 Z", "M50 395 H450 V433 H50 Z", "url(#st-stone)", "#141317", null, FX)}
+      ${textPanel("#121115", "url(#st-stone)", FX)}
+      ${seal("url(#st-stone)", "#141317", FX, null)}
+      ${blade("url(#st-stone)", "#141317", "#5a5760", FX)}
+      ${gemRow("common")}`;
+  }
+
+  // ---------------- UNCOMMON: bone ----------------
+  function uncommonFrame(card, uid) {
+    const WIN = "M40 392 V122 Q250 78 460 122 V392 Z";
+    const OUT = "M30 0 H470 L500 30 V670 L470 700 H30 L0 670 V30 Z";
+    const IN_ = "M36 16 H464 L484 36 V664 L464 684 H36 L16 664 V36 Z";
+    const FX = 'filter="url(#bn-bonefx)"';
+
+    // grooves that split the frame into stacked vertebra segments
+    const sideGrooves = Array.from({ length: 26 }, (_, i) => {
+      const y = 46 + i * 24;
+      return `M0 ${y} H16 M484 ${y} H500`;
+    }).join(" ");
+    const topGrooves = Array.from({ length: 14 }, (_, i) => {
+      const x = 62 + i * 28;
+      return `M${x} 0 V16 M${x} 684 V700`;
+    }).join(" ");
+
+    return `
+      <path d="${OUT}" fill="#0e0c0a"/>
+      <path d="${IN_} ${WIN}" fill="#8a7f6a" fill-rule="evenodd" ${FX}/>
+      ${artLayer(card, WIN, [40, 78, 420, 314], uid, "url(#ac-empty)")}
+      <path d="${WIN}" fill="none" stroke="url(#bn-bone)" stroke-width="10" ${FX}/>
+
+      <path d="${OUT} ${IN_}" fill="url(#bn-bone)" fill-rule="evenodd" ${FX}/>
+      <path d="${sideGrooves} ${topGrooves}" fill="none" stroke="#6b604c" stroke-width="1.6" opacity=".85"/>
+
+      <!-- knuckle-bone corners -->
+      <g fill="url(#bn-bone)" ${FX}>
+        <circle cx="14" cy="14" r="13"/><circle cx="486" cy="14" r="13"/>
+        <circle cx="14" cy="686" r="13"/><circle cx="486" cy="686" r="13"/>
+      </g>
+
+      <use href="#fb-skull" transform="translate(250 34) scale(.7)"/>
+
+      ${plate(PLATE, PLATE_IN, "url(#bn-bone)", "#1a1510", "#e9e0cf", FX)}
+      ${textPanel("#15110c", "url(#bn-bone)", FX)}
+      ${seal("url(#bn-bone)", "#1a1510", FX, "#e9e0cf")}
+      ${blade("url(#bn-bone)", "#1a1510", "#d8ccb4", FX)}
+      ${gemRow("uncommon")}`;
+  }
+
+  // ---------------- RARE: obsidian & amethyst ----------------
+  const shard = (x, y, angle, len, w) => `
+    <g transform="translate(${x} ${y}) rotate(${angle})">
+      <path d="M${-w / 2} 0 L0 ${-len} L${w / 2} 0 L0 ${w * 0.35} Z" fill="url(#ob-amethyst)"/>
+      <path d="M0 ${-len} L${w / 2} 0 L0 ${w * 0.35} Z" fill="#1a0630" opacity=".45"/>
+      <path d="M${-w / 2} 0 L0 ${-len}" stroke="#fff" stroke-width=".8" opacity=".6"/>
+    </g>`;
+
+  const cluster = (x, y, a, s = 1) =>
+    shard(x, y, a - 22, 30 * s, 12 * s) +
+    shard(x, y, a + 20, 26 * s, 11 * s) +
+    shard(x, y, a, 44 * s, 15 * s);
+
+  function rareFrame(card, uid) {
+    const FX = 'filter="url(#ob-glossfx)"';
+
+    return `
+      <rect width="500" height="700" rx="24" fill="#050407"/>
+      <path d="${INNER} ${ARCH}" fill="#120e18" fill-rule="evenodd" ${FX}/>
+      ${vines("#9b6fd6", 1.2)}
+      ${artLayer(card, ARCH, [40, 60, 420, 332], uid, "url(#ac-empty)")}
+      <path d="${ARCH}" fill="none" stroke="url(#ob-obsidian)" stroke-width="12" ${FX}/>
+      <path d="${ARCH}" fill="none" stroke="#b27bff" stroke-width="1.4" opacity=".9" filter="url(#fb-glow)"/>
+
+      <path d="${OUTER}" fill="url(#ob-obsidian)" fill-rule="evenodd" ${FX}/>
+      <rect x="21" y="21" width="458" height="658" rx="11" fill="none" stroke="#b27bff" stroke-width=".9" opacity=".7"/>
+
+      ${plate(PLATE, PLATE_IN, "url(#ob-obsidian)", "url(#fb-enamel)", "#c49cff", FX)}
+      
+      ${textPanel("url(#fb-inset)", "url(#ob-obsidian)", FX)}
+      ${seal("url(#ob-obsidian)", "url(#fb-enamel)", FX, "#c49cff")}
+      <ellipse cx="440" cy="650" rx="40" ry="44" fill="#8a4dd6" opacity=".3" filter="url(#fb-blur4)"/>
+      ${blade("url(#ob-obsidian)", "url(#fb-enamel)", "url(#ob-amethyst)", FX, 'filter="url(#fb-glow)"')}
+      ${gemRow("rare")}`;
+  }
+
+  // ---------------- LEGENDARY: blackened gold, full art ----------------
+  // skeletal gold wing for the left side (mirrored for the right)
+  const WING = `
+    <path d="M8 120 L-38 50 Q-38 92 -54 122 Q-44 166 -46 206 Q-34 238 -30 272 L8 292 Z" fill="#1c0a26" opacity=".78"/>
+    <path d="M8 120 Q-16 80 -38 50 M8 150 Q-26 130 -54 122 M8 200 Q-24 200 -46 206 M8 250 Q-14 262 -30 272"
+          fill="none" stroke="url(#lg-gold)" stroke-width="4.5" stroke-linecap="round" filter="url(#fb-metalfx)"/>
+    <g fill="url(#lg-gold)">
+      <path d="M-38 50 l-3 -9 l7 5 z"/>
+      <path d="M-54 122 l-9 -2 l7 -5 z"/>
+      <path d="M-46 206 l-9 1 l6 -6 z"/>
+      <path d="M-30 272 l-7 5 l2 -8 z"/>
+    </g>`;
+
+  function legendaryFrame(card, uid) {
+    const FX = 'filter="url(#fb-metalfx)"';
+    const GLASS = "rgba(8, 5, 14, .66)";
+
+        return `
+      <rect width="500" height="700" rx="24" fill="#050308"/>
+
+      <!-- full art: the painting fills the whole card -->
+      ${artLayer(card, INNER, [16, 16, 468, 668], uid, "url(#lg-art)")}
+      ${vines("url(#lg-gold)", 1.8)}
+
+      <path d="${OUTER}" fill="url(#lg-gold)" fill-rule="evenodd" ${FX}/>
+      <rect x="21" y="21" width="458" height="658" rx="11" fill="none" stroke="url(#lg-gold)" stroke-width="1.4" opacity=".9"/>
+
+      <!-- horned skull wearing a gold crown -->
+      <path d="M226 16 C204 6 194 -12 202 -28 C206 -12 216 -2 232 4 Z M274 16 C296 6 306 -12 298 -28 C294 -12 284 -2 268 4 Z"
+            fill="url(#lg-gold)" ${FX}/>
+      <use href="#fb-skull" transform="translate(250 30) scale(1.2)"/>
+      <path d="M226 8 L232 -18 L240 -2 L250 -30 L260 -2 L268 -18 L274 8 Z" fill="url(#lg-gold)" ${FX}/>
+      ${facetGem(250, -12, 0.7, GEM_COLORS.legendary, "cf-gem")}
+
+      <!-- glass panels over the art -->
+      ${plate(PLATE, PLATE_IN, GLASS, "rgba(20, 8, 30, .5)", "url(#lg-gold)", "")}
+      <path d="${PLATE}" fill="none" stroke="url(#lg-gold)" stroke-width="2.5" ${FX}/>
+      ${textPanel(GLASS, "url(#lg-gold)", FX)}
+      ${seal("url(#lg-gold)", GLASS, FX, "#e8c878")}
+      <ellipse cx="440" cy="650" rx="40" ry="44" fill="#d24fd0" opacity=".35" filter="url(#fb-blur4)"/>
+      ${blade("url(#lg-gold)", GLASS, "url(#lg-gold)", FX)}
+
+      <ellipse cx="250" cy="672" rx="60" ry="16" fill="#d24fd0" opacity=".45" filter="url(#fb-blur4)"/>
+      ${gemRow("legendary")}`;
+  }
+
+  // Animated shadow-flames and drifting wisps, drawn on their own layer
+  // so the detailed frame underneath doesn't have to redraw every frame
+  function legendaryFX() {
+    const wisps = [
+
+      [8, 600, 0], [492, 520, 2.5], [8, 380, 5], [492, 260, 1.2], [140, 64, 3.6], [360, 64, 6],
+    ].map(([x, y, d]) =>
+      `<circle class="lg-wisp" cx="${x}" cy="${y}" r="3" fill="#e0a8ff" filter="url(#fb-glow)" style="animation-delay:-${d}s"/>`
+    ).join("");
+
+    return `
+    <svg class="card-fx" viewBox="0 0 500 700" aria-hidden="true">
+      ${wisps}
+    </svg>`;
+  }
+
+  const ATTACK_FRAMES = {
+    common: commonFrame,
+    uncommon: uncommonFrame,
+    rare: rareFrame,
+    legendary: legendaryFrame,
+  };
+
+  function attackFrontSVG(card) {
+    const rarity = ATTACK_FRAMES[card.rarity] ? card.rarity : "common";
+    const uid = `ac-${card.id}`;
+    return `
+      <svg class="card-svg" viewBox="0 0 500 700" aria-hidden="true">
+        ${ATTACK_FRAMES[rarity](card, uid)}
+      </svg>
+      ${rarity === "legendary" ? legendaryFX() : ""}`;
   }
 
   // =====================================================================
@@ -212,163 +452,8 @@
   }
 
   // =====================================================================
-  // Attack card frames (common / uncommon / rare / legendary)
-  // =====================================================================
-  const RARITY = {
-    common:    { level: 0, gem: ["#b4aebb", "#77717f", "#3a3640"] },  // dull grey stone
-    uncommon:  { level: 1, gem: ["#ffffff", "#d3cee0", "#8a8496"] },  // pale silver
-    rare:      { level: 2, gem: ["#e3c6ff", "#9b5ce6", "#2a0c4f"] },  // violet
-    legendary: { level: 3, gem: ["#ffd9f7", "#d24fd0", "#4a0c52"] },  // magenta
-  };
-
-  // Art window shapes: plain rectangle, gentle arch, full gothic arch
-  const WINDOWS = [
-    "M40 72 H460 V392 H40 Z",
-    "M40 392 V122 Q250 78 460 122 V392 Z",
-    ARCH,
-  ];
-
-  // Faceted gem in any three colors (light, mid, dark)
-  const facetGem = (x, y, s, [c0, c1, c2], cls = "") => `
-    <g transform="translate(${x} ${y}) scale(${s})" class="${cls}">
-      <path d="M0 -9 L9 0 L0 9 L-9 0 Z" fill="${c2}"/>
-      <path d="M0 -9 L9 0 L0 0 Z" fill="${c0}"/>
-      <path d="M0 -9 L-9 0 L0 0 Z" fill="${c1}"/>
-      <path d="M-9 0 L0 9 L0 0 Z" fill="${c2}" opacity=".8"/>
-      <path d="M9 0 L0 9 L0 0 Z" fill="${c1}" opacity=".8"/>
-      <path d="M0 -9 L9 0 L0 9 L-9 0 Z" fill="none" stroke="#0a0610" stroke-width="1"/>
-      <circle cx="2" cy="-3" r="1.2" fill="#fff" opacity=".9"/>
-    </g>`;
-
-  const RIVETS = `
-    <g fill="#4a4058" filter="url(#fb-metalfx)">
-      <circle cx="32" cy="32" r="5"/><circle cx="468" cy="32" r="5"/>
-      <circle cx="32" cy="668" r="5"/><circle cx="468" cy="668" r="5"/>
-    </g>`;
-
-  // Attack emblem (bottom right), shaped like a blade
-  const BLADE = "M440 610 L476 644 L440 692 L404 644 Z";
-  const BLADE_IN = "M440 620 L466 644 L440 680 L414 644 Z";
-
-  // Soul wisps that drift up the legendary frame
-  const WISPS = [
-    [8, 600, 0], [492, 520, 2.5], [8, 380, 5], [492, 260, 1.2], [140, 64, 3.6], [360, 64, 6],
-  ].map(([x, y, d]) =>
-    `<circle class="lg-wisp" cx="${x}" cy="${y}" r="3" fill="#e0a8ff" filter="url(#fb-glow)" style="animation-delay:-${d}s"/>`
-  ).join("");
-
-  function attackFrontSVG(card) {
-    const r = RARITY[card.rarity] || RARITY.common;
-    const L = r.level;
-    const win = WINDOWS[Math.min(L, 2)];
-    const gold = L >= 3;
-    const metal = L === 0 ? "url(#ac-iron)" : "url(#fb-metal)";
-    const accent = gold ? "url(#ac-gold)" : "#b27bff";
-    const bladeLine = L === 0 ? "#5a5660" : gold ? "url(#ac-gold)" : L >= 2 ? "url(#fb-bone)" : "#c49cff";
-    const uid = `ac-${card.id}`;
-
-    return `
-    <svg class="card-svg" viewBox="0 0 500 700" aria-hidden="true">
-      <defs>
-        <clipPath id="${uid}-win"><path d="${win}"/></clipPath>
-        <radialGradient id="ac-empty" cx=".5" cy=".45" r=".7">
-          <stop offset="0" stop-color="#2a1640"/>
-          <stop offset=".6" stop-color="#140a20"/>
-          <stop offset="1" stop-color="#07040b"/>
-        </radialGradient>
-        <linearGradient id="ac-iron" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#4a4650"/>
-          <stop offset=".5" stop-color="#16141a"/>
-          <stop offset="1" stop-color="#2c2930"/>
-        </linearGradient>
-        <linearGradient id="ac-gold" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#e8c878"/>
-          <stop offset=".5" stop-color="#7a5a24"/>
-          <stop offset="1" stop-color="#b8904a"/>
-        </linearGradient>
-      </defs>
-
-      <rect width="500" height="700" rx="24" fill="#07050a"/>
-
-      <!-- inset panel around the art window -->
-      <path d="${INNER} ${win}" fill="url(#fb-panel)" fill-rule="evenodd" filter="url(#fb-metalfx)"/>
-      ${L >= 2 ? FILIGREE : ""}
-
-      <!-- empty art window -->
-      <path d="${win}" fill="url(#ac-empty)"/>
-      <path d="${win}" fill="url(#cf-art-vignette)"/>
-      <g clip-path="url(#${uid}-win)">
-        <path d="${win}" fill="none" stroke="#000" stroke-width="22" opacity=".85" filter="url(#fb-blur4)"/>
-      </g>
-      <path d="${win}" fill="none" stroke="${L === 0 ? "url(#ac-iron)" : "url(#fb-metal)"}" stroke-width="${L === 0 ? 8 : 12}" filter="url(#fb-metalfx)"/>
-      ${L >= 1 ? `<path class="${gold ? "lg-rim" : ""}" d="${win}" fill="none" stroke="${accent}" stroke-width="${gold ? 2 : 1.2}" opacity=".9" ${L >= 2 ? 'filter="url(#fb-glow)"' : ""}/>` : ""}
-
-      <!-- outer frame -->
-      <path d="${OUTER}" fill="${metal}" fill-rule="evenodd" filter="url(#fb-metalfx)"/>
-      ${L >= 1 ? `<rect x="21" y="21" width="458" height="658" rx="11" fill="none" stroke="${gold ? "url(#ac-gold)" : "#7d5fb0"}" stroke-width="${gold ? 1.4 : 0.8}" opacity="${gold ? 0.9 : 0.55}"/>` : ""}
-      ${L <= 1 ? RIVETS : ""}
-
-      <!-- spine and crossed bones (rare and up) -->
-      ${L >= 2 ? `
-        <g filter="url(#fb-bonefx)">
-          ${spine(8)}${spine(492)}
-          ${crossed(460, 40)}${crossed(40, 660)}
-        </g>` : ""}
-      ${L >= 3 ? `
-        <use href="#fb-skull" transform="translate(460 40) scale(.55)"/>
-        <use href="#fb-skull" transform="translate(40 660) scale(.55)"/>` : ""}
-
-      <!-- crest -->
-      ${L >= 2 ? `
-        <path d="${WINGS}" fill="none" stroke="#1a1222" stroke-width="6" stroke-linecap="round" transform="translate(0 1.5)"/>
-        <path d="${WINGS}" fill="none" stroke="url(#fb-bone)" stroke-width="4" stroke-linecap="round" filter="url(#fb-bonefx)"/>` : ""}
-      ${L >= 3 ? `
-        <path d="${HORNS}" fill="url(#fb-horn)" filter="url(#fb-metalfx)"/>
-        <path d="M226 20 Q224 14 220 10 M230 18 Q226 12 222 8 M274 20 Q276 14 280 10 M270 18 Q274 12 278 8"
-              fill="none" stroke="#000" stroke-width=".7" opacity=".6"/>` : ""}
-      ${L === 1 ? `<use href="#fb-skull" transform="translate(250 38) scale(.62)"/>` : ""}
-      ${L >= 2 ? `<use href="#fb-skull" x="250" y="36"/>` : ""}
-
-      <!-- name plate (empty) -->
-      <path d="${PLATE}" fill="${L === 0 ? "url(#ac-iron)" : "url(#fb-metal-h)"}" filter="url(#fb-metalfx)"/>
-      ${L >= 1
-        ? `<path d="${PLATE_IN}" fill="url(#fb-enamel)"/>
-           <path d="${PLATE_IN}" fill="none" stroke="${gold ? "url(#ac-gold)" : "#c49cff"}" stroke-width=".8" opacity=".7"/>`
-        : `<path d="${PLATE_IN}" fill="#0f0d12"/>`}
-      ${L >= 2 ? facetGem(34, 414, 1, r.gem, "cf-gem") + facetGem(466, 414, 1, r.gem, "cf-gem") : ""}
-
-      <!-- text box (empty) -->
-      <rect x="48" y="476" width="404" height="148" rx="6" fill="url(#fb-inset)" filter="url(#fb-canvasfx)"/>
-      <g clip-path="url(#fb-tb-clip)">
-        <rect x="48" y="476" width="404" height="148" rx="6" fill="none" stroke="#000" stroke-width="14" opacity=".8" filter="url(#fb-blur4)"/>
-      </g>
-      <rect x="48" y="476" width="404" height="148" rx="6" fill="none" stroke="${metal}" stroke-width="3" filter="url(#fb-metalfx)"/>
-      ${L >= 2 ? `<path d="${BRACKETS}" fill="none" stroke="${gold ? "url(#ac-gold)" : "url(#fb-bone)"}" stroke-width="3.2" stroke-linecap="round" filter="url(#fb-bonefx)"/>` : ""}
-
-      <!-- cost seal (empty) -->
-      <circle cx="66" cy="66" r="36" fill="${metal}" filter="url(#fb-metalfx)"/>
-      <circle cx="66" cy="66" r="29" fill="${L === 0 ? "#0f0d12" : "url(#fb-enamel)"}"/>
-      ${L >= 1 ? `<circle cx="66" cy="66" r="32.5" fill="none" stroke="${gold ? "url(#ac-gold)" : "#c9b6e6"}" stroke-width="1.2" stroke-dasharray="1.5 4" opacity=".7"/>` : ""}
-
-      <!-- attack emblem (empty) -->
-      ${L >= 2 ? `<ellipse cx="440" cy="650" rx="40" ry="44" fill="${gold ? "#d24fd0" : "#8a4dd6"}" opacity=".3" filter="url(#fb-blur4)"/>` : ""}
-      <path d="${BLADE}" fill="${metal}" filter="url(#fb-metalfx)"/>
-      <path d="${BLADE_IN}" fill="${L === 0 ? "#0f0d12" : "url(#fb-enamel)"}"/>
-      <path d="${BLADE_IN}" fill="none" stroke="${bladeLine}" stroke-width="${L >= 2 ? 2.2 : 1}" ${L >= 2 ? 'filter="url(#fb-bonefx)"' : ""}/>
-      <path d="M422 632 H458" stroke="${bladeLine}" stroke-width="2" stroke-linecap="round"/>
-
-      <!-- rarity gem -->
-      ${gold ? `<ellipse cx="250" cy="674" rx="26" ry="22" fill="#d24fd0" opacity=".45" filter="url(#fb-blur4)"/>` : ""}
-      ${facetGem(250, 674, gold ? 2 : 1.4, r.gem, L >= 2 ? "cf-gem" : "")}
-
-      ${gold ? WISPS : ""}
-    </svg>`;
-  }
-
-  // =====================================================================
   // Card HTML
   // =====================================================================
-
   const abilityHTML = (a) =>
     `<p><span class="ability-name">${a.name}</span>` +
     (a.cost != null ? `<span class="soul-cost" aria-label="${a.cost} Souls">${a.cost}</span>` : "") +
@@ -432,7 +517,7 @@
   // Grid
   // =====================================================================
   const grid = document.getElementById("card-grid");
-    grid.innerHTML = CARDS.map((c) => `
+  grid.innerHTML = CARDS.map((c) => `
     <figure class="card-slot">
       ${cardHTML(c)}
       ${c.label ? `<figcaption class="card-caption">${c.label}</figcaption>` : ""}

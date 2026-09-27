@@ -13,7 +13,7 @@
   <!-- Materials and shapes used by every card frame -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <defs>
-      <!-- ===== Gradients ===== -->
+      <!-- ================= Hero frame (painted pewter & enamel) ================= -->
       <linearGradient id="fb-metal" x1="0" y1="0" x2="0" y2="1">
         <stop offset="0" stop-color="#4a4058"/>
         <stop offset=".35" stop-color="#1d1726"/>
@@ -63,7 +63,7 @@
         <stop offset="1" stop-color="#000" stop-opacity=".85"/>
       </radialGradient>
 
-      <!-- card back background -->
+      <!-- card back -->
       <radialGradient id="cb-bg" cx=".5" cy=".45" r=".75">
         <stop offset="0" stop-color="#2a1340"/>
         <stop offset=".6" stop-color="#110a1a"/>
@@ -73,7 +73,60 @@
         <path d="M0 20 L20 0 L40 20 L20 40 Z" fill="none" stroke="#2a1a3d" stroke-width="1"/>
       </pattern>
 
-      <!-- ===== Clips ===== -->
+      <!-- ================= Attack card materials ================= -->
+      <!-- empty art (until a card gets its picture) -->
+      <radialGradient id="ac-empty" cx=".5" cy=".45" r=".7">
+        <stop offset="0" stop-color="#2a1640"/>
+        <stop offset=".6" stop-color="#140a20"/>
+        <stop offset="1" stop-color="#07040b"/>
+      </radialGradient>
+
+      <!-- Common: rough grey stone -->
+      <linearGradient id="st-stone" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#b3b0ba"/>
+        <stop offset=".5" stop-color="#85828c"/>
+        <stop offset="1" stop-color="#9d9aa4"/>
+      </linearGradient>
+      <radialGradient id="st-empty" cx=".5" cy=".45" r=".7">
+        <stop offset="0" stop-color="#2c2a31"/>
+        <stop offset=".6" stop-color="#17161a"/>
+        <stop offset="1" stop-color="#09080b"/>
+      </radialGradient>
+
+      <!-- Uncommon: bone -->
+      <linearGradient id="bn-bone" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#f3ecdc"/>
+        <stop offset=".5" stop-color="#cfc3aa"/>
+        <stop offset="1" stop-color="#a39679"/>
+      </linearGradient>
+
+      <!-- Rare: obsidian & amethyst -->
+      <linearGradient id="ob-obsidian" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#2e2440"/>
+        <stop offset=".45" stop-color="#0a0710"/>
+        <stop offset=".7" stop-color="#1c1428"/>
+        <stop offset="1" stop-color="#06040a"/>
+      </linearGradient>
+      <linearGradient id="ob-amethyst" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#f0dcff"/>
+        <stop offset=".4" stop-color="#a86cf0"/>
+        <stop offset="1" stop-color="#3b1466"/>
+      </linearGradient>
+
+      <!-- Legendary: blackened gold -->
+      <linearGradient id="lg-gold" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#f3d487"/>
+        <stop offset=".35" stop-color="#9a7430"/>
+        <stop offset=".6" stop-color="#3a2810"/>
+        <stop offset="1" stop-color="#c9a052"/>
+      </linearGradient>
+      <radialGradient id="lg-art" cx=".5" cy=".42" r=".7">
+        <stop offset="0" stop-color="#4a1a66"/>
+        <stop offset=".45" stop-color="#1e0b2e"/>
+        <stop offset="1" stop-color="#06030a"/>
+      </radialGradient>
+
+      <!-- ================= Clips ================= -->
       <clipPath id="cf-arch">
         <path d="M40 392 V160 Q40 100 250 70 Q460 100 460 160 V392 Z"/>
       </clipPath>
@@ -82,8 +135,8 @@
         <path d="M440 686 C414 668 402 654 402 640 C402 628 411 620 421 620 C430 620 436 626 440 632 C444 626 450 620 459 620 C469 620 478 628 478 640 C478 654 466 668 440 686 Z"/>
       </clipPath>
 
-      <!-- ===== Filters ===== -->
-      <!-- brushed metal + bevel lit from the top right -->
+      <!-- ================= Filters ================= -->
+      <!-- brushed metal + bevel -->
       <filter id="fb-metalfx" x="-3%" y="-3%" width="106%" height="106%">
         <feTurbulence type="fractalNoise" baseFrequency="0.9 0.22" numOctaves="2" seed="5" result="n"/>
         <feColorMatrix in="n" type="saturate" values="0" result="g"/>
@@ -103,7 +156,7 @@
         <feComposite in="lit" in2="SourceAlpha" operator="in"/>
       </filter>
 
-      <!-- glossy bone -->
+      <!-- glossy bone (hero details) -->
       <filter id="fb-bonefx" x="-10%" y="-10%" width="120%" height="120%">
         <feGaussianBlur in="SourceAlpha" stdDeviation="1.2" result="bump"/>
         <feSpecularLighting in="bump" surfaceScale="2.5" specularConstant=".6" specularExponent="16" lighting-color="#ffffff" result="spec">
@@ -127,6 +180,53 @@
         <feComposite in="t" in2="SourceGraphic" operator="in"/>
       </filter>
 
+      <!-- rough chipped stone -->
+      <filter id="st-stonefx" x="-3%" y="-3%" width="106%" height="106%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="31" result="grain"/>
+        <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="4" seed="32" result="blotch"/>
+        <feGaussianBlur in="SourceAlpha" stdDeviation="2.5" result="bevel"/>
+        <feComposite in="bevel" in2="grain" operator="arithmetic" k1="0" k2="1" k3="0.35" k4="0" result="bump0"/>
+        <feComposite in="bump0" in2="blotch" operator="arithmetic" k1="0" k2="1" k3="0.25" k4="0" result="bump"/>
+        <feDiffuseLighting in="bump" surfaceScale="3" lighting-color="#8f8b96" result="diff">
+          <feDistantLight azimuth="300" elevation="42"/>
+        </feDiffuseLighting>
+        <feBlend in="SourceGraphic" in2="diff" mode="multiply" result="tinted"/>
+        <feComposite in="tinted" in2="SourceAlpha" operator="in"/>
+      </filter>
+
+      <!-- weathered, pitted bone -->
+      <filter id="bn-bonefx" x="-10%" y="-10%" width="120%" height="120%">
+        <feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="6" result="pits"/>
+        <feGaussianBlur in="SourceAlpha" stdDeviation="1.6" result="round"/>
+        <feComposite in="round" in2="pits" operator="arithmetic" k1="0" k2="1" k3="0.15" k4="0" result="bump"/>
+        <feDiffuseLighting in="bump" surfaceScale="3" lighting-color="#f2ead9" result="diff">
+          <feDistantLight azimuth="300" elevation="45"/>
+        </feDiffuseLighting>
+        <feSpecularLighting in="bump" surfaceScale="3" specularConstant=".35" specularExponent="14" lighting-color="#ffffff" result="spec">
+          <feDistantLight azimuth="300" elevation="45"/>
+        </feSpecularLighting>
+        <feBlend in="SourceGraphic" in2="diff" mode="multiply" result="tinted"/>
+        <feComposite in="tinted" in2="spec" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="lit"/>
+        <feComposite in="lit" in2="SourceAlpha" operator="in"/>
+      </filter>
+
+      <!-- glossy obsidian -->
+      <filter id="ob-glossfx" x="-3%" y="-3%" width="106%" height="106%">
+        <feGaussianBlur in="SourceAlpha" stdDeviation="2.5" result="bump"/>
+        <feSpecularLighting in="bump" surfaceScale="5" specularConstant="1" specularExponent="35" lighting-color="#d8b8ff" result="spec">
+          <fePointLight x="380" y="-160" z="320"/>
+        </feSpecularLighting>
+        <feComposite in="spec" in2="SourceAlpha" operator="in" result="s"/>
+        <feComposite in="SourceGraphic" in2="s" operator="arithmetic" k1="0" k2="1" k3="1" k4="0"/>
+      </filter>
+
+      <!-- violet glow around crystals -->
+      <filter id="ob-crystalglow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="b"/>
+        <feColorMatrix in="b" values="0 0 0 0 .6  0 0 0 0 .3  0 0 0 0 .95  0 0 0 .9 0" result="c"/>
+        <feMerge><feMergeNode in="c"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+
       <filter id="fb-glow" x="-100%" y="-100%" width="300%" height="300%">
         <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="b"/>
         <feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
@@ -135,7 +235,7 @@
         <feGaussianBlur stdDeviation="4"/>
       </filter>
 
-      <!-- ===== Reusable pieces ===== -->
+      <!-- ================= Reusable pieces ================= -->
       <g id="fb-skull">
         <path fill="url(#fb-bone)" d="M0 -22 C-14 -22 -20 -11 -20 -1 C-20 7 -16 12 -12 14 V21 H12 V14 C16 12 20 7 20 -1 C20 -11 14 -22 0 -22 Z"/>
         <path fill="#000" opacity=".35" d="M-20 -1 C-20 7 -16 12 -12 14 V21 H-2 V12 C-9 10 -15 6 -16 -4 Z"/>
@@ -170,6 +270,12 @@
         <path d="M9 0 L0 9 L0 0 Z" fill="#7a3cd0"/>
         <path d="M0 -9 L9 0 L0 9 L-9 0 Z" fill="none" stroke="#0a0610" stroke-width="1"/>
         <circle cx="2" cy="-3" r="1.2" fill="#fff"/>
+      </g>
+
+      <!-- a single tongue of shadow-flame (legendary) -->
+      <g id="lg-flame">
+        <path d="M0 0 C-9 -6 -8 -18 0 -34 C8 -18 9 -6 0 0 Z" fill="#b02fd0" opacity=".85"/>
+        <path d="M0 -2 C-5 -6 -4 -14 0 -24 C4 -14 5 -6 0 -2 Z" fill="#f2c8ff"/>
       </g>
     </defs>
   </svg>
