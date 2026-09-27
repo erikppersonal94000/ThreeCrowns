@@ -413,6 +413,9 @@
   Screens.register("title", {
     music: TITLE_THEME,
 
+    // smoke whoosh as you return to the title
+    sound: () => GameAudio.smoke(),
+
     enter() {
       // coming back from a kingdom: replay the intro
       resetTitle();
