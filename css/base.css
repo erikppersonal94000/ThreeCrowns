@@ -1,0 +1,42 @@
+/* ============ Shared by every screen ============ */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body { margin: 0; height: 100%; }
+
+body {
+  background: #07050b;
+  font-family: "IM Fell English", Georgia, serif;
+  overflow: hidden; /* each screen handles its own scrolling */
+}
+
+/* Each screen fills the window. Only one is visible at a time. */
+.screen {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  isolation: isolate;
+}
+.screen[hidden] { display: none !important; }
+.screen:focus { outline: none; }
+
+/* Screens with content taller than the window */
+.screen--scroll {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* Freeze a screen while the smoke covers it, so the browser isn't
+   animating two things at once */
+.screen.is-frozen,
+.screen.is-frozen * {
+  animation-play-state: paused !important;
+  transition: none !important;
+}
+
+/* ============ Reduced motion ============ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

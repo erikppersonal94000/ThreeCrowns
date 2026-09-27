@@ -79,7 +79,7 @@
       portraitImg.alt = `${hero.name}, ${hero.title}`;
       info.innerHTML = infoHTML(hero);
       document.getElementById("begin-btn").addEventListener("click", () => {
-        // Later: Smoke.cover("battle.html") once battles exist
+        // Later: Screens.go("battle") once battles exist
         document.getElementById("begin-note").hidden = false;
       });
     };
@@ -128,55 +128,29 @@
   renderRoster();
   showHero(HEROES[0], false);
 
-  // Bring everything in once the smoke has mostly cleared
-  setTimeout(() => document.body.classList.add("is-ready"), reduceMotion ? 0 : 700);
-
   // =====================================================================
-  // Drifting violet motes
+  // Screen hooks
   // =====================================================================
-  if (!reduceMotion) {
-    const canvas = document.getElementById("motes");
-    const ctx = canvas.getContext("2d");
-    let W = 0, H = 0;
+  const screen = document.getElementById("screen-duskmoor");
+  const motes = Motes(document.getElementById("motes"));
+  let readyTimer = 0;
 
-    function resize() {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      W = window.innerWidth;
-      H = window.innerHeight;
-      canvas.width = W * dpr;
-      canvas.height = H * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    }
-    resize();
-    window.addEventListener("resize", resize);
+  Screens.register("duskmoor", {
+    // Change to "audio/duskmoor-theme.mp3" once you have the track
+    music: null,
 
-    const newMote = (anywhere) => ({
-      x: Math.random() * W,
-      y: anywhere ? Math.random() * H : H + 10,
-      r: 0.6 + Math.random() * 1.8,
-      vy: 0.15 + Math.random() * 0.45,
-      phase: Math.random() * Math.PI * 2,
-      a: 0.25 + Math.random() * 0.5,
-    });
-    const motes = Array.from({ length: 70 }, () => newMote(true));
+    enter() {
+      // Reset, then bring everything in once the smoke has mostly cleared
+      screen.classList.remove("is-ready");
+      clearTimeout(readyTimer);
+      readyTimer = setTimeout(() => screen.classList.add("is-ready"), reduceMotion ? 0 : 700);
+      motes.start();
+      // wait for the portrait so it's there when the smoke lifts
+      return portraitImg.decode ? portraitImg.decode().catch(() => {}) : null;
+    },
 
-    (function loop() {
-      ctx.clearRect(0, 0, W, H);
-      ctx.globalCompositeOperation = "lighter";
-      ctx.shadowColor = "rgb(140, 60, 230)";
-      ctx.shadowBlur = 8;
-      for (let i = 0; i < motes.length; i++) {
-        const m = motes[i];
-        m.phase += 0.01;
-        m.y -= m.vy;
-        m.x += Math.sin(m.phase) * 0.3;
-        if (m.y < -10) motes[i] = newMote(false);
-        ctx.fillStyle = `rgba(180, 120, 255, ${m.a})`;
-        ctx.beginPath();
-        ctx.arc(m.x, m.y, m.r, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      requestAnimationFrame(loop);
-    })();
-  }
+    exit() {
+      motes.stop();
+    },
+  });
 })();

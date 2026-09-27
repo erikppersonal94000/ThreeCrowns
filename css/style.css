@@ -21,27 +21,23 @@
   --font-snow:     "Uncial Antiqua", Georgia, serif;
 }
 
-*, *::before, *::after { box-sizing: border-box; }
-
-html, body { margin: 0; min-height: 100%; }
-
-body {
+/* ============ Title screen ============ */
+/* Rules start with #screen-title so they only affect this screen.
+   The tokens above and the splash at the bottom are shared. */
+#screen-title {
   background: var(--night);
   color: var(--parchment);
-  font-family: var(--font-body);
-  overflow: hidden;
-  min-height: 100vh;
 }
 
 /* ============ Kingdom panels ============ */
-.realms {
+#screen-title .realms {
   position: fixed;
   inset: 0;
   z-index: 0;
   display: flex;
 }
 
-.realm {
+#screen-title .realm {
   position: relative;
   flex: 1 1 0;
   overflow: hidden;
@@ -55,13 +51,13 @@ body {
 
 /* Each panel after the first slides under the previous edge and fades in
    from the left, so the images cross-fade instead of meeting at a hard line */
-.realm + .realm {
+#screen-title .realm + .realm {
   margin-left: calc(var(--fade) * -1);
   -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 var(--fade));
           mask-image: linear-gradient(90deg, transparent 0, #000 var(--fade));
 }
 
-.realm-bg {
+#screen-title .realm-bg {
   position: absolute;
   inset: -4%;
   z-index: 0;
@@ -78,21 +74,21 @@ body {
 
 /* Per-kingdom image, crop point and color grade.
    Tweak --bright / --sat / --hue if an image looks off. */
-.realm[data-kingdom="dark"] .realm-bg {
+#screen-title .realm[data-kingdom="dark"] .realm-bg {
   background-image: url("../graphics/title/dark.jpg");
   background-position: center 25%;
   --bright: .8;
   --sat: .8;
   --hue: -55deg; /* turns the red glows violet */
 }
-.realm[data-kingdom="mountain"] .realm-bg {
+#screen-title .realm[data-kingdom="mountain"] .realm-bg {
   background-image: url("../graphics/title/mountain.jpg");
   background-position: center 35%;
   --bright: .6;
   --sat: .8;
   animation-delay: -10s;
 }
-.realm[data-kingdom="snow"] .realm-bg {
+#screen-title .realm[data-kingdom="snow"] .realm-bg {
   background-image: url("../graphics/title/snow.jpg");
   background-position: center 40%;
   --bright: .5;   /* daytime image, so it gets darkened the most */
@@ -106,7 +102,7 @@ body {
 }
 
 /* Kingdom color tint */
-.realm::before {
+#screen-title .realm::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -114,12 +110,12 @@ body {
   mix-blend-mode: soft-light;
   opacity: .75;
 }
-.realm[data-kingdom="dark"]::before     { background: #4b1f78; }
-.realm[data-kingdom="mountain"]::before { background: #c08a3e; }
-.realm[data-kingdom="snow"]::before     { background: #2a4f8a; }
+#screen-title .realm[data-kingdom="dark"]::before     { background: #4b1f78; }
+#screen-title .realm[data-kingdom="mountain"]::before { background: #c08a3e; }
+#screen-title .realm[data-kingdom="snow"]::before     { background: #2a4f8a; }
 
 /* Dark top and bottom so the UI stays readable */
-.realm::after {
+#screen-title .realm::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -132,21 +128,21 @@ body {
 }
 
 /* Intro: panels fade in one at a time */
-body.lit-dark     .realm[data-kingdom="dark"],
-body.lit-mountain .realm[data-kingdom="mountain"],
-body.lit-snow     .realm[data-kingdom="snow"] { opacity: 1; }
+#screen-title.lit-dark     .realm[data-kingdom="dark"],
+#screen-title.lit-mountain .realm[data-kingdom="mountain"],
+#screen-title.lit-snow     .realm[data-kingdom="snow"] { opacity: 1; }
 
 /* Focus: chosen kingdom widens, the others dim */
-body[data-focus] .realm { filter: brightness(.5) saturate(.6); }
-body[data-focus="dark"]     .realm[data-kingdom="dark"],
-body[data-focus="mountain"] .realm[data-kingdom="mountain"],
-body[data-focus="snow"]     .realm[data-kingdom="snow"] {
+#screen-title[data-focus] .realm { filter: brightness(.5) saturate(.6); }
+#screen-title[data-focus="dark"]     .realm[data-kingdom="dark"],
+#screen-title[data-focus="mountain"] .realm[data-kingdom="mountain"],
+#screen-title[data-focus="snow"]     .realm[data-kingdom="snow"] {
   flex-grow: 1.8;
   filter: none;
 }
 
 /* ============ Shared overlays ============ */
-#particles {
+#screen-title #particles {
   position: fixed;
   inset: 0;
   z-index: 1;
@@ -155,7 +151,7 @@ body[data-focus="snow"]     .realm[data-kingdom="snow"] {
   pointer-events: none;
 }
 
-.fog {
+#screen-title .fog {
   position: fixed;
   left: -10%;
   right: -10%;
@@ -175,7 +171,7 @@ body[data-focus="snow"]     .realm[data-kingdom="snow"] {
   to   { transform: translateX(3%); }
 }
 
-.vignette {
+#screen-title .vignette {
   position: fixed;
   inset: 0;
   z-index: 1;
@@ -186,7 +182,7 @@ body[data-focus="snow"]     .realm[data-kingdom="snow"] {
 }
 
 /* ============ Title ============ */
-.title-screen {
+#screen-title .title-screen {
   position: fixed;
   inset: 0 0 auto 0;
   z-index: 2;
@@ -197,7 +193,7 @@ body[data-focus="snow"]     .realm[data-kingdom="snow"] {
   pointer-events: none; /* hovers pass through to the panels */
 }
 
-.game-title {
+#screen-title .game-title {
   --glow: rgba(0, 0, 0, .8);
   display: grid; /* stacks the four title versions on top of each other */
   margin: 0;
@@ -213,7 +209,7 @@ body[data-focus="snow"]     .realm[data-kingdom="snow"] {
     filter .8s ease;
 }
 
-.title-face {
+#screen-title .title-face {
   grid-area: 1 / 1;
   align-self: center;
   justify-self: center;
@@ -227,21 +223,21 @@ body[data-focus="snow"]     .realm[data-kingdom="snow"] {
 }
 
 /* Default: molten gold */
-.title-face[data-face="default"] {
+#screen-title .title-face[data-face="default"] {
   font-family: var(--font-title);
   background-image: linear-gradient(180deg, #fff3cf 0%, var(--gold) 45%, #a86f22 70%, #f3cc7a 100%);
   opacity: 1;
   transform: none;
 }
 /* Duskmoor: gothic, pale violet into deep purple */
-.title-face[data-face="dark"] {
+#screen-title .title-face[data-face="dark"] {
   font-family: var(--font-dark);
   font-weight: 800;
   font-size: 1.02em;
   background-image: linear-gradient(180deg, #efe4ff 0%, #a77be0 40%, #4b2272 72%, #c9a7f0 100%);
 }
 /* Stonehelm: carved capitals in bronze */
-.title-face[data-face="mountain"] {
+#screen-title .title-face[data-face="mountain"] {
   font-family: var(--font-mountain);
   font-weight: 900;
   font-size: .66em;
@@ -249,24 +245,24 @@ body[data-focus="snow"]     .realm[data-kingdom="snow"] {
   background-image: linear-gradient(180deg, #fff0c8 0%, #d9a650 42%, #7c4e1c 72%, #f0c77a 100%);
 }
 /* Frostvale: old northern hand in ice */
-.title-face[data-face="snow"] {
+#screen-title .title-face[data-face="snow"] {
   font-family: var(--font-snow);
   font-size: .78em;
   background-image: linear-gradient(180deg, #ffffff 0%, #cfeaff 40%, #6fa6d6 72%, #e8f6ff 100%);
 }
 
 /* Crossfade to the focused kingdom's title */
-body[data-focus] .title-face[data-face="default"] { opacity: 0; transform: scale(1.03); }
-body[data-focus="dark"]     .title-face[data-face="dark"],
-body[data-focus="mountain"] .title-face[data-face="mountain"],
-body[data-focus="snow"]     .title-face[data-face="snow"] { opacity: 1; transform: none; }
+#screen-title[data-focus] .title-face[data-face="default"] { opacity: 0; transform: scale(1.03); }
+#screen-title[data-focus="dark"]     .title-face[data-face="dark"],
+#screen-title[data-focus="mountain"] .title-face[data-face="mountain"],
+#screen-title[data-focus="snow"]     .title-face[data-face="snow"] { opacity: 1; transform: none; }
 
 /* Title glow takes on the focused kingdom's color */
-body[data-focus="dark"]     .game-title { --glow: rgba(120, 50, 190, .85); }
-body[data-focus="mountain"] .game-title { --glow: rgba(220, 150, 60, .75); }
-body[data-focus="snow"]     .game-title { --glow: rgba(120, 190, 255, .8); }
+#screen-title[data-focus="dark"]     .game-title { --glow: rgba(120, 50, 190, .85); }
+#screen-title[data-focus="mountain"] .game-title { --glow: rgba(220, 150, 60, .75); }
+#screen-title[data-focus="snow"]     .game-title { --glow: rgba(120, 190, 255, .8); }
 
-.tagline {
+#screen-title .tagline {
   margin: 1rem auto 0;
   max-width: 34ch;
   font-style: italic;
@@ -278,7 +274,7 @@ body[data-focus="snow"]     .game-title { --glow: rgba(120, 190, 255, .8); }
   transition: opacity 1.4s ease .4s;
 }
 
-.hint {
+#screen-title .hint {
   margin: 2.5rem 0 0;
   font-family: var(--font-caps);
   font-size: 1.05rem;
@@ -288,10 +284,10 @@ body[data-focus="snow"]     .game-title { --glow: rgba(120, 190, 255, .8); }
   transition: opacity .6s ease;
 }
 
-body.ready .game-title { opacity: 1; transform: scale(1); }
-body.ready .tagline    { opacity: 1; }
-body.ready .hint       { animation: breathe 3.2s ease-in-out 1.2s infinite; }
-body.touched .hint     { animation: none; opacity: 0; }
+#screen-title.ready .game-title { opacity: 1; transform: scale(1); }
+#screen-title.ready .tagline    { opacity: 1; }
+#screen-title.ready .hint       { animation: breathe 3.2s ease-in-out 1.2s infinite; }
+#screen-title.touched .hint     { animation: none; opacity: 0; }
 
 @keyframes breathe {
   0%, 100% { opacity: .25; }
@@ -300,7 +296,7 @@ body.touched .hint     { animation: none; opacity: 0; }
 
 /* ============ Kingdom plates ============ */
 /* This layer mirrors the panel layout so each plate sits in its own kingdom */
-.plates {
+#screen-title .plates {
   position: fixed;
   inset: 0;
   z-index: 2;
@@ -308,7 +304,7 @@ body.touched .hint     { animation: none; opacity: 0; }
   pointer-events: none;
 }
 
-.plate {
+#screen-title .plate {
   flex: 1 1 0;
   display: flex;
   align-items: flex-end;
@@ -316,13 +312,13 @@ body.touched .hint     { animation: none; opacity: 0; }
   padding: 0 calc(var(--fade) * .6) 10vh;
   transition: flex-grow .9s var(--ease-panel);
 }
-.plate + .plate { margin-left: calc(var(--fade) * -1); }
+#screen-title .plate + .plate { margin-left: calc(var(--fade) * -1); }
 
-body[data-focus="dark"]     .plate[data-kingdom="dark"],
-body[data-focus="mountain"] .plate[data-kingdom="mountain"],
-body[data-focus="snow"]     .plate[data-kingdom="snow"] { flex-grow: 1.8; }
+#screen-title[data-focus="dark"]     .plate[data-kingdom="dark"],
+#screen-title[data-focus="mountain"] .plate[data-kingdom="mountain"],
+#screen-title[data-focus="snow"]     .plate[data-kingdom="snow"] { flex-grow: 1.8; }
 
-.plate-inner {
+#screen-title .plate-inner {
   --c: var(--gold);
   --accent: var(--gold);
   position: relative;
@@ -332,12 +328,12 @@ body[data-focus="snow"]     .plate[data-kingdom="snow"] { flex-grow: 1.8; }
   max-width: 300px;
   text-align: center;
 }
-.plate[data-kingdom="dark"]     .plate-inner { --c: var(--dark);     --accent: #b58bdc; }
-.plate[data-kingdom="mountain"] .plate-inner { --c: var(--mountain); --accent: var(--gold); }
-.plate[data-kingdom="snow"]     .plate-inner { --c: var(--snow);     --accent: #bfe3ff; }
+#screen-title .plate[data-kingdom="dark"]     .plate-inner { --c: var(--dark);     --accent: #b58bdc; }
+#screen-title .plate[data-kingdom="mountain"] .plate-inner { --c: var(--mountain); --accent: var(--gold); }
+#screen-title .plate[data-kingdom="snow"]     .plate-inner { --c: var(--snow);     --accent: #bfe3ff; }
 
 /* soft shadow pool behind the text */
-.plate-inner::before {
+#screen-title .plate-inner::before {
   content: "";
   position: absolute;
   inset: -40px -60px -30px;
@@ -348,30 +344,30 @@ body[data-focus="snow"]     .plate[data-kingdom="snow"] { flex-grow: 1.8; }
 }
 
 /* Hidden state: every piece sits a little low and invisible */
-.plate-inner > * {
+#screen-title .plate-inner > * {
   opacity: 0;
   transform: translateY(14px);
   transition: opacity .3s ease, transform .3s ease;
 }
 
 /* Shown state: pieces rise in one after another */
-.plate.is-active .plate-inner::before { opacity: 1; }
-.plate.is-active .plate-inner > * {
+#screen-title .plate.is-active .plate-inner::before { opacity: 1; }
+#screen-title .plate.is-active .plate-inner > * {
   opacity: 1;
   transform: none;
   transition-duration: .6s;
 }
-.plate.is-active .plate-inner > :nth-child(2) { transition-delay: .08s; }
-.plate.is-active .plate-inner > :nth-child(3) { transition-delay: .16s; }
-.plate.is-active .plate-inner > :nth-child(4) { transition-delay: .24s; }
-.plate.is-active .plate-inner > :nth-child(5) { transition-delay: .34s; }
+#screen-title .plate.is-active .plate-inner > :nth-child(2) { transition-delay: .08s; }
+#screen-title .plate.is-active .plate-inner > :nth-child(3) { transition-delay: .16s; }
+#screen-title .plate.is-active .plate-inner > :nth-child(4) { transition-delay: .24s; }
+#screen-title .plate.is-active .plate-inner > :nth-child(5) { transition-delay: .34s; }
 
 /* The banner drops down instead of rising */
-.plate-inner > .plate-crest { transform: translateY(-20px); }
-.plate.is-active .plate-inner > .plate-crest { transform: none; }
+#screen-title .plate-inner > .plate-crest { transform: translateY(-20px); }
+#screen-title .plate.is-active .plate-inner > .plate-crest { transform: none; }
 
 /* Detailed SVG banners */
-.banner-art {
+#screen-title .banner-art {
   display: block;
   width: clamp(76px, 8.5vw, 110px);
   height: auto;
@@ -380,8 +376,8 @@ body[data-focus="snow"]     .plate[data-kingdom="snow"] { flex-grow: 1.8; }
   animation: sway 6s ease-in-out infinite;
   filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .6)) drop-shadow(0 0 14px var(--c));
 }
-.plate[data-kingdom="mountain"] .banner-art { animation-delay: -2s; }
-.plate[data-kingdom="snow"] .banner-art     { animation-delay: -4s; }
+#screen-title .plate[data-kingdom="mountain"] .banner-art { animation-delay: -2s; }
+#screen-title .plate[data-kingdom="snow"] .banner-art     { animation-delay: -4s; }
 
 @keyframes sway {
   0%, 100% { transform: rotate(-1.2deg) skewX(-1deg); }
@@ -389,33 +385,33 @@ body[data-focus="snow"]     .plate[data-kingdom="snow"] { flex-grow: 1.8; }
 }
 
 /* Kingdom names, each in its own typeface */
-.plate-name {
+#screen-title .plate-name {
   margin: .6rem 0 0;
   font-weight: 400;
   line-height: 1;
   color: #fff3d6;
   text-shadow: 0 2px 10px rgba(0, 0, 0, .9), 0 0 24px var(--c);
 }
-.plate[data-kingdom="dark"] .plate-name {
+#screen-title .plate[data-kingdom="dark"] .plate-name {
   font-family: var(--font-dark);
   font-weight: 800;
   font-size: clamp(2.1rem, 3.5vw, 3.1rem);
   color: #efe4ff;
 }
-.plate[data-kingdom="mountain"] .plate-name {
+#screen-title .plate[data-kingdom="mountain"] .plate-name {
   font-family: var(--font-mountain);
   font-weight: 900;
   font-size: clamp(1.5rem, 2.6vw, 2.3rem);
   letter-spacing: .04em;
   color: #fff0c8;
 }
-.plate[data-kingdom="snow"] .plate-name {
+#screen-title .plate[data-kingdom="snow"] .plate-name {
   font-family: var(--font-snow);
   font-size: clamp(1.7rem, 2.9vw, 2.6rem);
   color: #f2faff;
 }
 
-.plate-motto {
+#screen-title .plate-motto {
   margin: .35rem 0 0;
   font-family: var(--font-caps);
   font-size: 1.05rem;
@@ -423,7 +419,7 @@ body[data-focus="snow"]     .plate[data-kingdom="snow"] { flex-grow: 1.8; }
   text-shadow: 0 2px 6px rgba(0, 0, 0, .9);
 }
 
-.plate-lore {
+#screen-title .plate-lore {
   margin: .75rem 0 0;
   max-width: 30ch;
   font-style: italic;
@@ -433,7 +429,7 @@ body[data-focus="snow"]     .plate[data-kingdom="snow"] { flex-grow: 1.8; }
   text-shadow: 0 2px 6px rgba(0, 0, 0, .95);
 }
 
-.plate-btn {
+#screen-title .plate-btn {
   margin-top: 1.25rem;
   padding: .7rem 1.6rem;
   font-family: var(--font-caps);
@@ -446,18 +442,18 @@ body[data-focus="snow"]     .plate[data-kingdom="snow"] { flex-grow: 1.8; }
   pointer-events: none; /* not clickable while hidden */
   transition: box-shadow .2s ease, color .2s ease;
 }
-.plate.is-active .plate-btn { pointer-events: auto; }
+#screen-title .plate.is-active .plate-btn { pointer-events: auto; }
 
-.plate-btn:hover,
-.plate-btn:focus-visible {
+#screen-title .plate-btn:hover,
+#screen-title .plate-btn:focus-visible {
   color: #1a0f04;
   box-shadow: 0 0 28px rgba(232, 182, 89, .55);
   outline: none;
 }
-.plate-btn:focus-visible { outline: 2px solid #fff3d6; outline-offset: 3px; }
+#screen-title .plate-btn:focus-visible { outline: 2px solid #fff3d6; outline-offset: 3px; }
 
 /* ============ Corner menu ============ */
-.corner-menu {
+#screen-title .corner-menu {
   position: fixed;
   top: 18px;
   right: 20px;
@@ -467,11 +463,11 @@ body[data-focus="snow"]     .plate[data-kingdom="snow"] { flex-grow: 1.8; }
   opacity: 0;
   transition: opacity .5s ease;
 }
-body[data-focus] .corner-menu,
-.corner-menu:focus-within { opacity: 1; }
-body:not([data-focus]) .corner-menu:not(:focus-within) { pointer-events: none; }
+#screen-title[data-focus] .corner-menu,
+#screen-title .corner-menu:focus-within { opacity: 1; }
+#screen-title:not([data-focus]) .corner-menu:not(:focus-within) { pointer-events: none; }
 
-.corner-btn {
+#screen-title .corner-btn {
   padding: .45rem 1rem;
   font-family: var(--font-caps);
   font-size: 1rem;
@@ -484,15 +480,15 @@ body:not([data-focus]) .corner-menu:not(:focus-within) { pointer-events: none; }
   display: inline-block;
   text-decoration: none;
 }
-.corner-btn:hover,
-.corner-btn:focus-visible {
+#screen-title .corner-btn:hover,
+#screen-title .corner-btn:focus-visible {
   color: #fff4d6;
   border-color: var(--gold);
   box-shadow: 0 0 16px rgba(232, 182, 89, .25);
   outline: none;
 }
 
-.credit {
+#screen-title .credit {
   position: fixed;
   bottom: 12px;
   left: 0;
@@ -507,22 +503,22 @@ body:not([data-focus]) .corner-menu:not(:focus-within) { pointer-events: none; }
 /* ============ Small screens ============ */
 @media (max-width: 700px) {
   :root { --fade: 14vw; }
-  .title-screen { padding-top: 10vh; }
-  .plate { padding: 0 8px 9vh; }
-  .plate-lore { display: none; }
-  .plate-motto { font-size: .85rem; }
-  .plate-btn { font-size: .95rem; padding: .55rem .9rem; }
-  .corner-btn { font-size: .85rem; padding: .35rem .7rem; }
-  .banner-art { width: 64px; }
-  .plate[data-kingdom="dark"] .plate-name     { font-size: 1.7rem; }
-  .plate[data-kingdom="mountain"] .plate-name { font-size: 1.2rem; }
-  .plate[data-kingdom="snow"] .plate-name     { font-size: 1.4rem; }
+  #screen-title .title-screen { padding-top: 10vh; }
+  #screen-title .plate { padding: 0 8px 9vh; }
+  #screen-title .plate-lore { display: none; }
+  #screen-title .plate-motto { font-size: .85rem; }
+  #screen-title .plate-btn { font-size: .95rem; padding: .55rem .9rem; }
+  #screen-title .corner-btn { font-size: .85rem; padding: .35rem .7rem; }
+  #screen-title .banner-art { width: 64px; }
+  #screen-title .plate[data-kingdom="dark"] .plate-name     { font-size: 1.7rem; }
+  #screen-title .plate[data-kingdom="mountain"] .plate-name { font-size: 1.2rem; }
+  #screen-title .plate[data-kingdom="snow"] .plate-name     { font-size: 1.4rem; }
 }
 
 @media (max-height: 700px) {
-  .title-screen { padding-top: 4vh; }
-  .plate { padding-bottom: 6vh; }
-  .plate-lore { display: none; }
+  #screen-title .title-screen { padding-top: 4vh; }
+  #screen-title .plate { padding-bottom: 6vh; }
+  #screen-title .plate-lore { display: none; }
 }
 
 /* ============ Click-to-begin splash ============ */
@@ -581,9 +577,5 @@ body:not([data-focus]) .corner-menu:not(:focus-within) { pointer-events: none; }
 
 /* ============ Reduced motion ============ */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation: none !important;
-    transition: none !important;
-  }
-  body.ready .hint { opacity: .6; }
+  #screen-title.ready .hint { opacity: .6; }
 }
