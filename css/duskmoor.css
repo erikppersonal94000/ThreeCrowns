@@ -1,5 +1,6 @@
-/* ============ Tokens ============ */
-:root {
+/* ============ Duskmoor hub screen ============ */
+/* Every rule starts with #screen-duskmoor so it only affects this screen */
+#screen-duskmoor {
   --night:       #07050b;
   --ink:         #efe4ff;
   --violet:      #8a4dd6;
@@ -9,22 +10,14 @@
   --font-dark: "Grenze Gotisch", Georgia, serif;
   --font-body: "IM Fell English", Georgia, serif;
   --font-caps: "IM Fell English SC", Georgia, serif;
-}
 
-*, *::before, *::after { box-sizing: border-box; }
-
-html, body { margin: 0; min-height: 100%; }
-
-body {
   background: var(--night);
   color: var(--ink);
   font-family: var(--font-body);
-  min-height: 100vh;
-  overflow-x: hidden;
 }
 
 /* ============ Background ============ */
-.bg {
+#screen-duskmoor .bg {
   position: fixed;
   inset: -4%;
   z-index: 0;
@@ -37,7 +30,7 @@ body {
   to   { transform: scale(1.08) translate(-1%, -1%); }
 }
 
-.shade {
+#screen-duskmoor .shade {
   position: fixed;
   inset: 0;
   z-index: 0;
@@ -47,7 +40,7 @@ body {
     linear-gradient(180deg, rgba(7, 5, 11, .6) 0%, transparent 25%, transparent 70%, rgba(7, 5, 11, .9) 100%);
 }
 
-#motes {
+#screen-duskmoor #motes {
   position: fixed;
   inset: 0;
   z-index: 1;
@@ -56,7 +49,7 @@ body {
   pointer-events: none;
 }
 
-.fog {
+#screen-duskmoor .fog {
   position: fixed;
   left: -10%;
   right: -10%;
@@ -76,7 +69,7 @@ body {
 }
 
 /* ============ Top bar ============ */
-.topbar {
+#screen-duskmoor .topbar {
   position: relative;
   z-index: 2;
   display: grid;
@@ -86,22 +79,26 @@ body {
   padding: 22px clamp(16px, 4vw, 48px);
 }
 
-.nav-link {
+#screen-duskmoor .nav-link {
   justify-self: start;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
   font-family: var(--font-caps);
   font-size: 1rem;
   color: var(--violet-soft);
   text-decoration: none;
 }
-.nav-link:hover,
-.nav-link:focus-visible {
+#screen-duskmoor .nav-link:hover,
+#screen-duskmoor .nav-link:focus-visible {
   color: var(--ink);
   text-decoration: underline;
   text-underline-offset: 4px;
   outline: none;
 }
 
-.nav-link--button {
+#screen-duskmoor .nav-link--button {
   justify-self: end;
   padding: .5rem 1.1rem;
   color: var(--ink);
@@ -110,24 +107,24 @@ body {
   border-radius: 3px;
   transition: border-color .2s ease, box-shadow .2s ease;
 }
-.nav-link--button:hover,
-.nav-link--button:focus-visible {
+#screen-duskmoor .nav-link--button:hover,
+#screen-duskmoor .nav-link--button:focus-visible {
   text-decoration: none;
   border-color: var(--violet-soft);
   box-shadow: 0 0 18px rgba(138, 77, 214, .45);
 }
 
-.realm-title {
+#screen-duskmoor .realm-title {
   display: flex;
   align-items: center;
   gap: 12px;
 }
-.sigil {
+#screen-duskmoor .sigil {
   width: 44px;
   height: 44px;
   filter: drop-shadow(0 0 10px rgba(155, 92, 230, .7));
 }
-.realm-title h1 {
+#screen-duskmoor .realm-title h1 {
   margin: 0;
   font-family: var(--font-dark);
   font-weight: 800;
@@ -141,7 +138,7 @@ body {
 }
 
 /* ============ Hero select ============ */
-.hero-select {
+#screen-duskmoor .hero-select {
   position: relative;
   z-index: 2;
   display: flex;
@@ -151,7 +148,7 @@ body {
   padding: 12px clamp(16px, 4vw, 48px) 64px;
 }
 
-.hero-stage {
+#screen-duskmoor .hero-stage {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -162,7 +159,7 @@ body {
 }
 
 /* Arched portrait with a thin violet and dark double frame */
-.portrait {
+#screen-duskmoor .portrait {
   position: relative;
   width: min(400px, 86vw);
   aspect-ratio: 5 / 6;
@@ -176,14 +173,14 @@ body {
     0 30px 60px rgba(0, 0, 0, .7),
     0 0 70px rgba(138, 77, 214, .35);
 }
-.portrait img {
+#screen-duskmoor .portrait img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: opacity .35s ease, transform .6s ease;
 }
-.portrait::after {
+#screen-duskmoor .portrait::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -192,24 +189,24 @@ body {
     radial-gradient(ellipse at center 40%, transparent 55%, rgba(5, 3, 8, .7) 100%),
     linear-gradient(180deg, transparent 65%, rgba(7, 5, 11, .75) 100%);
 }
-.portrait.is-changing img { opacity: 0; transform: scale(1.03); }
+#screen-duskmoor .portrait.is-changing img { opacity: 0; transform: scale(1.03); }
 
 /* Hero details */
-.hero-info {
+#screen-duskmoor .hero-info {
   flex: 1 1 320px;
   max-width: 460px;
   transition: opacity .3s ease;
 }
-.hero-info.is-changing { opacity: 0; }
+#screen-duskmoor .hero-info.is-changing { opacity: 0; }
 
-.hero-kicker {
+#screen-duskmoor .hero-kicker {
   margin: 0 0 .4rem;
   font-family: var(--font-caps);
   font-size: 1.05rem;
   color: var(--violet-soft);
 }
 
-.hero-name {
+#screen-duskmoor .hero-name {
   margin: 0;
   font-family: var(--font-dark);
   font-weight: 800;
@@ -222,12 +219,12 @@ body {
   filter: drop-shadow(0 2px 0 #000) drop-shadow(0 0 10px rgba(160, 100, 255, .45));
 }
 
-.hero-stats {
+#screen-duskmoor .hero-stats {
   display: flex;
   gap: 18px;
   margin: 1rem 0 1.4rem;
 }
-.stat {
+#screen-duskmoor .stat {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -235,10 +232,10 @@ body {
   font-size: 1.05rem;
   color: var(--ink);
 }
-.stat svg { width: 26px; height: 26px; filter: drop-shadow(0 0 8px rgba(155, 92, 230, .7)); }
-.stat strong { font-family: var(--font-dark); font-weight: 800; font-size: 1.5rem; }
+#screen-duskmoor .stat svg { width: 26px; height: 26px; filter: drop-shadow(0 0 8px rgba(155, 92, 230, .7)); }
+#screen-duskmoor .stat strong { font-family: var(--font-dark); font-weight: 800; font-size: 1.5rem; }
 
-.abilities {
+#screen-duskmoor .abilities {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -246,25 +243,25 @@ body {
   flex-direction: column;
   gap: 14px;
 }
-.abilities li {
+#screen-duskmoor .abilities li {
   padding: 14px 16px;
   background: linear-gradient(180deg, rgba(26, 16, 38, .82), rgba(12, 8, 18, .82));
   border: 1px solid rgba(138, 77, 214, .3);
   border-radius: 4px;
 }
-.ab-head {
+#screen-duskmoor .ab-head {
   display: flex;
   align-items: center;
   gap: 10px;
   margin-bottom: .3rem;
 }
-.ab-name {
+#screen-duskmoor .ab-name {
   font-family: var(--font-dark);
   font-weight: 800;
   font-size: 1.3rem;
   color: #e2cfff;
 }
-.ab-cost {
+#screen-duskmoor .ab-cost {
   display: inline-grid;
   place-items: center;
   width: 24px;
@@ -277,14 +274,14 @@ body {
   font-size: .95rem;
   color: #fff;
 }
-.abilities p {
+#screen-duskmoor .abilities p {
   margin: 0;
   font-size: 1.05rem;
   line-height: 1.45;
   color: rgba(239, 228, 255, .88);
 }
 
-.hero-flavor {
+#screen-duskmoor .hero-flavor {
   margin: 1.4rem 0 0;
   padding-left: 14px;
   border-left: 2px solid rgba(138, 77, 214, .5);
@@ -294,7 +291,7 @@ body {
   color: rgba(201, 168, 240, .85);
 }
 
-.begin-btn {
+#screen-duskmoor .begin-btn {
   margin-top: 1.8rem;
   padding: .8rem 2rem;
   font-family: var(--font-caps);
@@ -306,21 +303,21 @@ body {
   cursor: pointer;
   transition: box-shadow .2s ease;
 }
-.begin-btn:hover,
-.begin-btn:focus-visible {
+#screen-duskmoor .begin-btn:hover,
+#screen-duskmoor .begin-btn:focus-visible {
   box-shadow: 0 0 28px rgba(232, 182, 89, .55);
   outline: none;
 }
-.begin-btn:focus-visible { outline: 2px solid #fff3d6; outline-offset: 3px; }
+#screen-duskmoor .begin-btn:focus-visible { outline: 2px solid #fff3d6; outline-offset: 3px; }
 
-.begin-note {
+#screen-duskmoor .begin-note {
   margin: .8rem 0 0;
   font-style: italic;
   color: var(--violet-soft);
 }
 
 /* ============ Roster ============ */
-.roster {
+#screen-duskmoor .roster {
   display: flex;
   gap: 22px;
   padding: 18px 26px;
@@ -329,7 +326,7 @@ body {
   border-radius: 6px;
 }
 
-.roster-hero {
+#screen-duskmoor .roster-hero {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -341,7 +338,7 @@ body {
   font: inherit;
   cursor: pointer;
 }
-.roster-thumb {
+#screen-duskmoor .roster-thumb {
   position: relative;
   width: 84px;
   height: 100px;
@@ -351,65 +348,57 @@ body {
   box-shadow: 0 0 0 1px rgba(178, 123, 255, .35);
   transition: box-shadow .25s ease, transform .25s ease;
 }
-.roster-thumb img {
+#screen-duskmoor .roster-thumb img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
-.roster-name {
+#screen-duskmoor .roster-name {
   font-family: var(--font-caps);
   font-size: .95rem;
   color: var(--violet-soft);
 }
 
-.roster-hero:hover .roster-thumb,
-.roster-hero:focus-visible .roster-thumb { transform: translateY(-3px); }
-.roster-hero:focus-visible { outline: none; }
-.roster-hero:focus-visible .roster-name { text-decoration: underline; text-underline-offset: 4px; }
+#screen-duskmoor .roster-hero:hover .roster-thumb,
+#screen-duskmoor .roster-hero:focus-visible .roster-thumb { transform: translateY(-3px); }
+#screen-duskmoor .roster-hero:focus-visible { outline: none; }
+#screen-duskmoor .roster-hero:focus-visible .roster-name { text-decoration: underline; text-underline-offset: 4px; }
 
-.roster-hero[aria-pressed="true"] .roster-thumb {
+#screen-duskmoor .roster-hero[aria-pressed="true"] .roster-thumb {
   box-shadow: 0 0 0 2px #c49cff, 0 0 20px rgba(155, 92, 230, .75);
 }
-.roster-hero[aria-pressed="true"] .roster-name { color: var(--ink); }
+#screen-duskmoor .roster-hero[aria-pressed="true"] .roster-name { color: var(--ink); }
 
 /* Locked heroes */
-.roster-hero.is-locked { cursor: not-allowed; }
-.roster-hero.is-locked .roster-thumb {
+#screen-duskmoor .roster-hero.is-locked { cursor: not-allowed; }
+#screen-duskmoor .roster-hero.is-locked .roster-thumb {
   display: grid;
   place-items: center;
   background: radial-gradient(ellipse at center 40%, #1c1428, #07050b);
 }
-.roster-hero.is-locked .roster-thumb svg { width: 34px; height: 34px; opacity: .6; }
-.roster-hero.is-locked .roster-name { color: rgba(181, 139, 220, .45); }
-.roster-hero.is-locked:hover .roster-thumb { transform: none; }
+#screen-duskmoor .roster-hero.is-locked .roster-thumb svg { width: 34px; height: 34px; opacity: .6; }
+#screen-duskmoor .roster-hero.is-locked .roster-name { color: rgba(181, 139, 220, .45); }
+#screen-duskmoor .roster-hero.is-locked:hover .roster-thumb { transform: none; }
 
 /* ============ Entrance, after the smoke clears ============ */
-.portrait,
-.hero-info,
-.roster {
+#screen-duskmoor .portrait,
+#screen-duskmoor .hero-info,
+#screen-duskmoor .roster {
   opacity: 0;
   transform: translateY(18px);
   transition: opacity .8s ease, transform .8s cubic-bezier(.2, .7, .2, 1);
 }
-body.is-ready .portrait,
-body.is-ready .hero-info,
-body.is-ready .roster { opacity: 1; transform: none; }
-body.is-ready .hero-info { transition-delay: .15s; }
-body.is-ready .roster    { transition-delay: .3s; }
+#screen-duskmoor.is-ready .portrait,
+#screen-duskmoor.is-ready .hero-info,
+#screen-duskmoor.is-ready .roster { opacity: 1; transform: none; }
+#screen-duskmoor.is-ready .hero-info { transition-delay: .15s; }
+#screen-duskmoor.is-ready .roster    { transition-delay: .3s; }
 
 /* ============ Small screens ============ */
 @media (max-width: 700px) {
-  .topbar { grid-template-columns: 1fr; justify-items: center; }
-  .nav-link, .nav-link--button { justify-self: center; }
-  .hero-info { text-align: center; }
-  .hero-stats { justify-content: center; }
-  .hero-flavor { border-left: 0; padding-left: 0; }
-}
-
-/* ============ Reduced motion ============ */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation: none !important;
-    transition: none !important;
-  }
+  #screen-duskmoor .topbar { grid-template-columns: 1fr; justify-items: center; }
+  #screen-duskmoor .nav-link, #screen-duskmoor .nav-link--button { justify-self: center; }
+  #screen-duskmoor .hero-info { text-align: center; }
+  #screen-duskmoor .hero-stats { justify-content: center; }
+  #screen-duskmoor .hero-flavor { border-left: 0; padding-left: 0; }
 }

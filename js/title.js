@@ -1,5 +1,5 @@
 (() => {
-  const body = document.body;
+  const body = document.getElementById("screen-title"); // title state classes live on this screen
   const root = document.documentElement;
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const realms = [...document.querySelectorAll(".realm")];
@@ -12,12 +12,14 @@
   const IDLE_MS = 3500;       // UI fades out after this long without mouse movement
   const TOUCH_IDLE_MS = 8000; // longer on touch screens
 
-  // Where each kingdom's button leads. Change these as real pages get built.
-  const KINGDOM_PAGES = {
-  dark: "duskmoor.html",   // Duskmoor
-    // mountain: "stonehelm.html",
-    // snow: "frostvale.html",
+  // Which screen each kingdom's button opens. Add these as screens get built.
+  const KINGDOM_SCREENS = {
+    dark: "duskmoor",
+    // mountain: "stonehelm",
+    // snow: "frostvale",
   };
+
+  const TITLE_THEME = "audio/title-theme.mp3";
 
   // ---------- Canvas ----------
   const canvas = document.getElementById("particles");
@@ -229,9 +231,11 @@
   }
 
   // ---------- Main loop ----------
+  let running = false;
+  let rafId = 0;
+
   function frame(t) {
-    // stop all particle work once we're leaving through the smoke
-    if (root.classList.contains("smoke-leaving")) return;
+    if (!running) return;
     const rects = getRects();
     if (particles.length < MAX_PARTICLES) {
       for (const k of lit) SPAWN[k]();
@@ -276,21 +280,46 @@
 
     if (LIGHTNING && lit.has("mountain")) drawLightning(rects.mountain, t);
 
-    requestAnimationFrame(frame);
+    rafId = requestAnimationFrame(frame);
+  }
+
+  function startLoop() {
+    if (running || reduceMotion) return;
+    running = true;
+    rafId = requestAnimationFrame(frame);
+  }
+
+  function stopLoop() {
+    running = false;
+    cancelAnimationFrame(rafId);
   }
 
   // ---------- Intro: panels fade in one by one, then the title ----------
+  let introTimers = [];
+
   function intro() {
     const steps = reduceMotion
       ? [[0, "lit-dark"], [0, "lit-mountain"], [0, "lit-snow"], [0, "ready"]]
       : [[200, "lit-dark"], [800, "lit-mountain"], [1400, "lit-snow"], [2100, "ready"]];
 
     for (const [delay, cls] of steps) {
-      setTimeout(() => {
+      introTimers.push(setTimeout(() => {
         body.classList.add(cls);
         if (cls.startsWith("lit-")) lit.add(cls.slice(4));
-      }, delay);
+      }, delay));
     }
+  }
+
+  // Put the title back to how it looks before the intro
+  function resetTitle() {
+    introTimers.forEach(clearTimeout);
+    introTimers = [];
+    body.classList.remove("lit-dark", "lit-mountain", "lit-snow", "ready", "touched");
+    delete body.dataset.focus;
+    plates.forEach((p) => p.classList.remove("is-active"));
+    lit.clear();
+    particles.length = 0;
+    ctx.clearRect(0, 0, W, H);
   }
 
   // ---------- Showing and hiding the UI ----------
@@ -346,7 +375,7 @@
   root.addEventListener("mouseleave", () => clearFocus(300));
 
   // Don't hide the UI while the pointer is on a button
-    document.querySelectorAll("button:not(.splash), a").forEach((btn) => {
+  body.querySelectorAll("button, a").forEach((btn) => {
     btn.addEventListener("pointerenter", () => { overUI = true; clearTimeout(idleTimer); });
     btn.addEventListener("pointerleave", () => { overUI = false; armIdle(); });
   });
@@ -358,8 +387,8 @@
     btn.addEventListener("focus", () => setFocus(k));
     btn.addEventListener("blur", () => clearFocus(400));
     btn.addEventListener("click", () => {
-      const url = KINGDOM_PAGES[k];
-      if (url) Smoke.cover(url);
+      const screen = KINGDOM_SCREENS[k];
+      if (screen) Screens.go(screen);
       else console.log(`${k} isn't built yet`);
     });
   });
@@ -373,38 +402,45 @@
   if (!reduceMotion) {
     const bgs = [...document.querySelectorAll(".realm-bg")];
     window.addEventListener("mousemove", (e) => {
+      if (!running) return;
       const dx = (e.clientX / W - 0.5) * -14;
       const dy = (e.clientY / H - 0.5) * -8;
       for (const bg of bgs) bg.style.translate = `${dx}px ${dy}px`;
     });
   }
 
+  // ---------- Screen hooks ----------
+  Screens.register("title", {
+    music: TITLE_THEME,
+
+    enter() {
+      // coming back from a kingdom: replay the intro
+      resetTitle();
+      startLoop();
+      intro();
+    },
+
+    exit() {
+      stopLoop();
+      clearTimeout(idleTimer);
+      clearTimeout(leaveTimer);
+      introTimers.forEach(clearTimeout);
+    },
+  });
+
   // ---------- Start ----------
   resize();
   window.addEventListener("resize", resize);
-  if (!reduceMotion) requestAnimationFrame(frame);
- 
-    const fontsReady = document.fonts ? document.fonts.ready : Promise.resolve();
+
+  // Click-to-begin splash: browsers only allow music after a click
+  const fontsReady = document.fonts ? document.fonts.ready : Promise.resolve();
   const splash = document.getElementById("splash");
-  const TITLE_THEME = "audio/title-theme.mp3";
+  fontsReady.then(() => splash.classList.add("is-shown"));
 
-  if (splash && !sessionStorage.getItem("tc-begun")) {
-    // First visit this session: show the splash, start music and intro on click
-    fontsReady.then(() => splash.classList.add("is-shown"));
-    let begun = false;
-    splash.addEventListener("click", () => {
-      if (begun) return;
-      begun = true;
-      sessionStorage.setItem("tc-begun", "1");
-      GameAudio.music(TITLE_THEME);
-      splash.classList.add("is-leaving");
-      setTimeout(() => { splash.remove(); intro(); }, 900);
-    });
-  } else {
-    // Already clicked in once this visit (e.g. coming back from Duskmoor)
-    splash?.remove();
+  splash.addEventListener("click", () => {
     GameAudio.music(TITLE_THEME);
-    fontsReady.then(intro);
-  }
-
+    splash.classList.add("is-leaving");
+    startLoop();
+    setTimeout(() => { splash.remove(); intro(); }, 900);
+  }, { once: true });
 })();

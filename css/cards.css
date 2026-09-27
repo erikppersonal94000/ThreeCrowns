@@ -1,5 +1,6 @@
-/* ============ Tokens ============ */
-:root {
+/* ============ Card library screen ============ */
+/* Every rule starts with #screen-cards so it only affects this screen */
+#screen-cards {
   --night:       #07050b;
   --ink:         #efe4ff;
   --violet:      #8a4dd6;
@@ -8,21 +9,14 @@
   --font-dark: "Grenze Gotisch", Georgia, serif;
   --font-body: "IM Fell English", Georgia, serif;
   --font-caps: "IM Fell English SC", Georgia, serif;
-}
 
-*, *::before, *::after { box-sizing: border-box; }
-
-html, body { margin: 0; min-height: 100%; }
-
-body {
-  background: radial-gradient(ellipse at 50% 0%, #2a1340 0%, #0f0818 45%, var(--night) 100%) fixed;
+  background: radial-gradient(ellipse at 50% 0%, #2a1340 0%, #0f0818 45%, var(--night) 100%);
   background-color: var(--night);
   color: var(--ink);
   font-family: var(--font-body);
-  min-height: 100vh;
 }
 
-#motes {
+#screen-cards #card-motes {
   position: fixed;
   inset: 0;
   z-index: 0;
@@ -32,7 +26,7 @@ body {
 }
 
 /* ============ Top bar ============ */
-.topbar {
+#screen-cards .topbar {
   position: relative;
   z-index: 1;
   display: flex;
@@ -44,21 +38,25 @@ body {
   background: linear-gradient(180deg, rgba(7, 5, 11, .85), rgba(7, 5, 11, 0));
 }
 
-.back-link {
+#screen-cards .back-link {
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
   font-family: var(--font-caps);
   font-size: 1rem;
   color: var(--violet-soft);
   text-decoration: none;
 }
-.back-link:hover,
-.back-link:focus-visible {
+#screen-cards .back-link:hover,
+#screen-cards .back-link:focus-visible {
   color: var(--ink);
   text-decoration: underline;
   text-underline-offset: 4px;
   outline: none;
 }
 
-.page-title {
+#screen-cards .page-title {
   margin: 0;
   font-family: var(--font-dark);
   font-weight: 800;
@@ -67,9 +65,9 @@ body {
   text-shadow: 0 0 24px rgba(138, 77, 214, .6);
 }
 
-.kingdom-tabs { margin-left: auto; display: flex; gap: 8px; }
+#screen-cards .kingdom-tabs { margin-left: auto; display: flex; gap: 8px; }
 
-.tab {
+#screen-cards .tab {
   padding: .4rem 1rem;
   font-family: var(--font-caps);
   font-size: 1rem;
@@ -79,33 +77,33 @@ body {
   border-radius: 3px;
   cursor: pointer;
 }
-.tab.is-active {
+#screen-cards .tab.is-active {
   color: var(--ink);
   border-color: var(--violet);
   box-shadow: 0 0 16px rgba(138, 77, 214, .35);
 }
 
-main {
+#screen-cards main {
   position: relative;
   z-index: 1;
   padding: 48px clamp(16px, 4vw, 48px) 72px;
 }
 
-.count {
+#screen-cards .count {
   margin: 0 0 36px;
   font-style: italic;
   color: rgba(239, 228, 255, .6);
 }
 
 /* extra room so wings, crowns and crystals can stick out */
-.card-grid {
+#screen-cards .card-grid {
   display: flex;
   flex-wrap: wrap;
   gap: 64px 72px;
   justify-content: center;
 }
 
-.card-slot {
+#screen-cards .card-slot {
   margin: 0;
   display: flex;
   flex-direction: column;
@@ -113,14 +111,14 @@ main {
   gap: 18px;
 }
 
-.card-caption {
+#screen-cards .card-caption {
   font-family: var(--font-caps);
   font-size: 1.05rem;
   color: var(--violet-soft);
 }
 
 /* ============ Card ============ */
-.card {
+#screen-cards .card {
   --w: min(300px, 78vw);
   position: relative;
   width: var(--w);
@@ -131,20 +129,20 @@ main {
   outline: none;
   transition: transform .3s ease;
 }
-.card-grid .card:hover,
-.card-grid .card:focus-visible { transform: translateY(-8px); }
+#screen-cards .card-grid .card:hover,
+#screen-cards .card-grid .card:focus-visible { transform: translateY(-8px); }
 
-.card-inner {
+#screen-cards .card-inner {
   position: absolute;
   inset: 0;
   transform-style: preserve-3d;
   transform: rotateX(var(--rx, 0deg)) rotateY(calc(var(--ry, 0deg) + var(--flip, 0deg)));
   transition: transform .6s cubic-bezier(.2, .7, .2, 1);
 }
-.card.is-tilting .card-inner { transition: transform .1s linear; }
-.card.is-flipped { --flip: 180deg; }
+#screen-cards .card.is-tilting .card-inner { transition: transform .1s linear; }
+#screen-cards .card.is-flipped { --flip: 180deg; }
 
-.card-face {
+#screen-cards .card-face {
   position: absolute;
   inset: 0;
   overflow: hidden;
@@ -153,13 +151,13 @@ main {
   -webkit-backface-visibility: hidden;
   box-shadow: 0 24px 48px rgba(0, 0, 0, .75), 0 0 36px rgba(120, 50, 190, .35);
 }
-.card-back { transform: rotateY(180deg); }
-.card:focus-visible .card-face { box-shadow: 0 24px 48px rgba(0, 0, 0, .75), 0 0 0 3px var(--ink); }
+#screen-cards .card-back { transform: rotateY(180deg); }
+#screen-cards .card:focus-visible .card-face { box-shadow: 0 24px 48px rgba(0, 0, 0, .75), 0 0 0 3px var(--ink); }
 
-.card-svg { display: block; width: 100%; height: 100%; }
+#screen-cards .card-svg { display: block; width: 100%; height: 100%; }
 
 /* Text laid over the frame. Positions match the frame's 500x700 layout. */
-.card-name {
+#screen-cards .card-name {
   position: absolute;
   left: 10%;
   right: 10%;
@@ -181,7 +179,7 @@ main {
   filter: drop-shadow(0 1px 0 #000) drop-shadow(0 0 5px rgba(160, 100, 255, .6));
 }
 
-.card-type {
+#screen-cards .card-type {
   position: absolute;
   left: 10%;
   right: 10%;
@@ -197,7 +195,7 @@ main {
   color: #c9a8f0;
 }
 
-.card-text {
+#screen-cards .card-text {
   position: absolute;
   left: 9.6%;
   width: 80.8%;
@@ -213,9 +211,9 @@ main {
   line-height: 1.3;
   color: rgba(239, 228, 255, .92);
 }
-.card-text p { margin: 0; }
+#screen-cards .card-text p { margin: 0; }
 
-.ability-name {
+#screen-cards .ability-name {
   margin-right: .8cqw;
   font-family: var(--font-dark);
   font-weight: 800;
@@ -223,7 +221,7 @@ main {
   color: #e2cfff;
 }
 
-.soul-cost {
+#screen-cards .soul-cost {
   display: inline-grid;
   place-items: center;
   width: 4.2cqw;
@@ -240,7 +238,7 @@ main {
   color: #fff;
 }
 
-.card-flavor {
+#screen-cards .card-flavor {
   padding-top: 1.4cqw;
   border-top: 1px solid rgba(201, 168, 240, .25);
   font-style: italic;
@@ -249,9 +247,9 @@ main {
   color: rgba(201, 168, 240, .8);
 }
 
-.card-health,
-.card-attack,
-.card-cost {
+#screen-cards .card-health,
+#screen-cards .card-attack,
+#screen-cards .card-cost {
   position: absolute;
   transform: translate(-50%, -50%);
   font-family: var(--font-dark);
@@ -260,12 +258,12 @@ main {
   color: #fff;
   text-shadow: 0 1px 0 #000, 0 0 2cqw rgba(0, 0, 0, .9);
 }
-.card-health,
-.card-attack { left: 88%; top: 92.57%; font-size: 6.4cqw; }
-.card-cost   { left: 13.2%; top: 9.43%; font-size: 8cqw; }
+#screen-cards .card-health,
+#screen-cards .card-attack { left: 88%; top: 92.57%; font-size: 6.4cqw; }
+#screen-cards .card-cost   { left: 13.2%; top: 9.43%; font-size: 8cqw; }
 
 /* Foil sheen that follows the cursor */
-.card-sheen {
+#screen-cards .card-sheen {
   position: absolute;
   inset: 0;
   pointer-events: none;
@@ -278,12 +276,12 @@ main {
   background-size: 100% 100%, 250% 250%;
   background-position: center, var(--mx, 50%) var(--my, 50%);
 }
-.card:hover .card-sheen,
-.card.is-tilting .card-sheen { opacity: 1; }
+#screen-cards .card:hover .card-sheen,
+#screen-cards .card.is-tilting .card-sheen { opacity: 1; }
 
 /* Slow pulse on the skull eyes, gems and seal stars */
-.cf-eye-glow,
-.cf-gem { animation: pulse 3s ease-in-out infinite; }
+#screen-cards .cf-eye-glow,
+#screen-cards .cf-gem { animation: pulse 3s ease-in-out infinite; }
 
 @keyframes pulse {
   0%, 100% { opacity: .7; }
@@ -292,22 +290,22 @@ main {
 
 /* ============ Attack cards: each rarity draws its own shape ============ */
 /* Let the frame's shape (wings, crystals, notches) show, and stick out past the edges */
-.card[data-type="attack"] .card-front {
+#screen-cards .card[data-type="attack"] .card-front {
   overflow: visible;
   border-radius: 0;
   box-shadow: none;
 }
-.card[data-type="attack"] .card-svg {
+#screen-cards .card[data-type="attack"] .card-svg {
   overflow: visible;
   filter: drop-shadow(0 18px 22px rgba(0, 0, 0, .75));
 }
-.card[data-type="attack"]:focus-visible .card-front { box-shadow: none; }
-.card[data-type="attack"]:focus-visible .card-svg {
+#screen-cards .card[data-type="attack"]:focus-visible .card-front { box-shadow: none; }
+#screen-cards .card[data-type="attack"]:focus-visible .card-svg {
   filter: drop-shadow(0 18px 22px rgba(0, 0, 0, .75)) drop-shadow(0 0 3px var(--ink));
 }
 
 /* animated layer on top of the legendary frame */
-.card-fx {
+#screen-cards .card-fx {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -317,20 +315,20 @@ main {
 }
 
 /* ---- Common: plain stone, no foil ---- */
-.card[data-rarity="common"] .card-sheen { display: none; }
-.card[data-rarity="common"] .card-name {
+#screen-cards .card[data-rarity="common"] .card-sheen { display: none; }
+#screen-cards .card[data-rarity="common"] .card-name {
   background: none;
   color: #d4d1d9;
   filter: drop-shadow(0 1px 0 #000);
 }
 
 /* ---- Uncommon: bone, notched corners, faint foil ---- */
-.card[data-rarity="uncommon"] .card-sheen {
+#screen-cards .card[data-rarity="uncommon"] .card-sheen {
   clip-path: polygon(6% 0, 94% 0, 100% 4.29%, 100% 95.71%, 94% 100%, 6% 100%, 0 95.71%, 0 4.29%);
 }
-.card[data-rarity="uncommon"]:hover .card-sheen,
-.card[data-rarity="uncommon"].is-tilting .card-sheen { opacity: .4; }
-.card[data-rarity="uncommon"] .card-name {
+#screen-cards .card[data-rarity="uncommon"]:hover .card-sheen,
+#screen-cards .card[data-rarity="uncommon"].is-tilting .card-sheen { opacity: .4; }
+#screen-cards .card[data-rarity="uncommon"] .card-name {
   background: linear-gradient(180deg, #fffaf0 0%, #e4d8bf 55%, #a8997a 100%);
   -webkit-background-clip: text;
           background-clip: text;
@@ -338,22 +336,22 @@ main {
 }
 
 /* ---- Rare: obsidian, violet glow, full foil ---- */
-.card[data-rarity="rare"] .card-sheen { clip-path: inset(0 round 4.8cqw); }
-.card[data-rarity="rare"] .card-svg {
+#screen-cards .card[data-rarity="rare"] .card-sheen { clip-path: inset(0 round 4.8cqw); }
+#screen-cards .card[data-rarity="rare"] .card-svg {
   filter: drop-shadow(0 18px 22px rgba(0, 0, 0, .75)) drop-shadow(0 0 16px rgba(155, 92, 230, .45));
 }
 
 /* ---- Legendary: blackened gold, magenta light, foil always on ---- */
-.card[data-rarity="legendary"] .card-sheen {
+#screen-cards .card[data-rarity="legendary"] .card-sheen {
   clip-path: inset(0 round 4.8cqw);
   opacity: .3;
 }
-.card[data-rarity="legendary"]:hover .card-sheen,
-.card[data-rarity="legendary"].is-tilting .card-sheen { opacity: 1; }
-.card[data-rarity="legendary"] .card-svg {
+#screen-cards .card[data-rarity="legendary"]:hover .card-sheen,
+#screen-cards .card[data-rarity="legendary"].is-tilting .card-sheen { opacity: 1; }
+#screen-cards .card[data-rarity="legendary"] .card-svg {
   filter: drop-shadow(0 18px 22px rgba(0, 0, 0, .75)) drop-shadow(0 0 34px rgba(210, 79, 208, .6));
 }
-.card[data-rarity="legendary"] .card-name {
+#screen-cards .card[data-rarity="legendary"] .card-name {
   background: linear-gradient(180deg, #fff3cf 0%, #e8c878 45%, #8a6424 75%, #f3d487 100%);
   -webkit-background-clip: text;
           background-clip: text;
@@ -361,7 +359,7 @@ main {
 }
 
 /* flickering shadow-flames */
-.lg-flicker {
+#screen-cards .lg-flicker {
   transform-box: fill-box;
   transform-origin: 50% 100%;
   animation: flicker 1.6s ease-in-out infinite;
@@ -373,7 +371,7 @@ main {
 }
 
 /* soul-wisps drifting up */
-.lg-wisp {
+#screen-cards .lg-wisp {
   opacity: 0;
   animation: wisp 7s ease-in-out infinite;
 }
@@ -384,7 +382,7 @@ main {
 }
 
 /* ============ Inspect view ============ */
-.inspect {
+#screen-cards .inspect {
   border: 0;
   padding: 0;
   background: transparent;
@@ -393,18 +391,18 @@ main {
   max-height: none;
   overflow: visible;
 }
-.inspect[open] {
+#screen-cards .inspect[open] {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 32px;
 }
-.inspect::backdrop {
+#screen-cards .inspect::backdrop {
   background: rgba(5, 3, 8, .85);
   backdrop-filter: blur(4px);
 }
 
-.inspect-stage .card {
+#screen-cards .inspect-stage .card {
   --w: min(420px, 74vw, 44vh);
   animation: rise .5s cubic-bezier(.2, .7, .2, 1);
 }
@@ -414,9 +412,9 @@ main {
   to   { opacity: 1; transform: none; }
 }
 
-.inspect-actions { display: flex; gap: 12px; }
+#screen-cards .inspect-actions { display: flex; gap: 12px; }
 
-.action {
+#screen-cards .action {
   padding: .55rem 1.3rem;
   font-family: var(--font-caps);
   font-size: 1.05rem;
@@ -427,17 +425,9 @@ main {
   cursor: pointer;
   transition: border-color .2s ease, box-shadow .2s ease;
 }
-.action:hover,
-.action:focus-visible {
+#screen-cards .action:hover,
+#screen-cards .action:focus-visible {
   border-color: var(--violet-soft);
   box-shadow: 0 0 18px rgba(138, 77, 214, .45);
   outline: none;
-}
-
-/* ============ Reduced motion ============ */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation: none !important;
-    transition: none !important;
-  }
 }

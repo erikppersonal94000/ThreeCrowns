@@ -606,52 +606,27 @@
   document.getElementById("close-btn").addEventListener("click", () => dialog.close());
   dialog.addEventListener("click", (e) => { if (e.target === dialog) dialog.close(); });
 
+    // =====================================================================
+  // Screen hooks
   // =====================================================================
-  // Drifting violet motes behind everything
-  // =====================================================================
-  if (!reduceMotion) {
-    const canvas = document.getElementById("motes");
-    const ctx = canvas.getContext("2d");
-    let W = 0, H = 0;
+  const motes = Motes(document.getElementById("card-motes"));
 
-    function resize() {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      W = window.innerWidth;
-      H = window.innerHeight;
-      canvas.width = W * dpr;
-      canvas.height = H * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    }
-    resize();
-    window.addEventListener("resize", resize);
+  Screens.register("cards", {
+    // no music setting: keeps whatever Duskmoor is playing
 
-    const newMote = (anywhere) => ({
-      x: Math.random() * W,
-      y: anywhere ? Math.random() * H : H + 10,
-      r: 0.6 + Math.random() * 1.8,
-      vy: 0.15 + Math.random() * 0.45,
-      phase: Math.random() * Math.PI * 2,
-      a: 0.25 + Math.random() * 0.5,
-    });
-    const motes = Array.from({ length: 70 }, () => newMote(true));
+    enter() {
+      motes.start();
+      // load every card picture so they're there when the smoke lifts
+      return Promise.all(CARDS.filter((c) => c.art).map((c) => {
+        const img = new Image();
+        img.src = c.art;
+        return img.decode().catch(() => {});
+      }));
+    },
 
-    (function loop() {
-      ctx.clearRect(0, 0, W, H);
-      ctx.globalCompositeOperation = "lighter";
-      ctx.shadowColor = "rgb(140, 60, 230)";
-      ctx.shadowBlur = 8;
-      for (let i = 0; i < motes.length; i++) {
-        const m = motes[i];
-        m.phase += 0.01;
-        m.y -= m.vy;
-        m.x += Math.sin(m.phase) * 0.3;
-        if (m.y < -10) motes[i] = newMote(false);
-        ctx.fillStyle = `rgba(180, 120, 255, ${m.a})`;
-        ctx.beginPath();
-        ctx.arc(m.x, m.y, m.r, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      requestAnimationFrame(loop);
-    })();
-  }
+    exit() {
+      motes.stop();
+      if (dialog.open) dialog.close();
+    },
+  });
 })();
