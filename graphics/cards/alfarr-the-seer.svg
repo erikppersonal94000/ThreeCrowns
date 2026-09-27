@@ -1,0 +1,327 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 468 668">
+  <defs>
+    <!-- ===== Palette ===== -->
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#eef3f6"/>
+      <stop offset="0.5" stop-color="#c7d4de"/>
+      <stop offset="0.8" stop-color="#dfe8ee"/>
+      <stop offset="1" stop-color="#f4f7f9"/>
+    </linearGradient>
+    <linearGradient id="snowGround" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f6f9fb"/>
+      <stop offset="1" stop-color="#c3d2de"/>
+    </linearGradient>
+    <linearGradient id="robe" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#55677b"/>
+      <stop offset="0.45" stop-color="#2c3746"/>
+      <stop offset="1" stop-color="#131922"/>
+    </linearGradient>
+    <linearGradient id="cloak" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#48596c"/>
+      <stop offset="0.5" stop-color="#232c38"/>
+      <stop offset="1" stop-color="#0e131a"/>
+    </linearGradient>
+    <linearGradient id="frostFur" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e6f7fb"/>
+      <stop offset="0.45" stop-color="#8ec2d2"/>
+      <stop offset="1" stop-color="#2c4a5a"/>
+    </linearGradient>
+    <linearGradient id="mask" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f2f6f9"/>
+      <stop offset="0.55" stop-color="#aebccb"/>
+      <stop offset="1" stop-color="#5a687a"/>
+    </linearGradient>
+    <linearGradient id="bone" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#eef2f5"/>
+      <stop offset="1" stop-color="#6f7c8c"/>
+    </linearGradient>
+    <linearGradient id="staff" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#6e8198"/>
+      <stop offset="0.5" stop-color="#34425a"/>
+      <stop offset="1" stop-color="#1a2230"/>
+    </linearGradient>
+    <linearGradient id="rag" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#b4c0cc"/>
+      <stop offset="1" stop-color="#5f6e80"/>
+    </linearGradient>
+    <!-- bright snow-light wrapping around his right edge -->
+    <linearGradient id="rimLight" x1="1" y1="0" x2="0" y2="0">
+      <stop offset="0" stop-color="#e8f2f8" stop-opacity="0.45"/>
+      <stop offset="0.35" stop-color="#e8f2f8" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="orbGlow" gradientUnits="userSpaceOnUse" cx="130" cy="122" r="240">
+      <stop offset="0" stop-color="#c8f0ff" stop-opacity="0.55"/>
+      <stop offset="0.3" stop-color="#8ab8ff" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#8ab8ff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="vignette" cx="0.5" cy="0.42" r="0.8">
+      <stop offset="0.55" stop-color="#0a0e16" stop-opacity="0"/>
+      <stop offset="1" stop-color="#0a0e16" stop-opacity="0.55"/>
+    </radialGradient>
+    <linearGradient id="fadeUp" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#fff"/>
+      <stop offset="1" stop-color="#000"/>
+    </linearGradient>
+
+    <mask id="mGround" maskUnits="userSpaceOnUse" x="0" y="0" width="468" height="668">
+      <rect x="0" y="470" width="468" height="198" fill="url(#fadeUp)"/>
+    </mask>
+
+    <!-- ===== Snow ===== -->
+    <pattern id="snowNear" patternUnits="userSpaceOnUse" width="120" height="140" patternTransform="rotate(-14)">
+      <g fill="#ffffff">
+        <circle cx="12" cy="18" r="1.7"/><circle cx="54" cy="6" r="1.2"/><circle cx="96" cy="30" r="2"/>
+        <circle cx="30" cy="60" r="1.3"/><circle cx="78" cy="72" r="1.6"/><circle cx="110" cy="96" r="1.1"/>
+        <circle cx="8" cy="104" r="1.4"/><circle cx="50" cy="118" r="1.8"/><circle cx="88" cy="130" r="1.2"/>
+      </g>
+    </pattern>
+    <pattern id="snowFar" patternUnits="userSpaceOnUse" width="200" height="220" patternTransform="rotate(-10)">
+      <g fill="#ffffff">
+        <circle cx="30" cy="40" r="4"/><circle cx="150" cy="20" r="3"/><circle cx="110" cy="120" r="4.4"/>
+        <circle cx="20" cy="170" r="3.2"/><circle cx="170" cy="190" r="3.6"/>
+      </g>
+    </pattern>
+
+    <!-- ===== Shapes reused for lighting ===== -->
+    <path id="robeShape" d="M170 250 C150 300 140 380 126 470 C110 560 96 620 84 668 H400 C386 620 372 560 358 470 C344 380 332 300 312 250 Z"/>
+    <path id="cloakShape" d="M160 240 C120 300 90 380 70 470 C58 530 48 590 40 650 C70 640 96 660 124 648 C150 664 178 650 204 662 C232 652 262 666 290 654 C318 664 346 650 372 658 C392 650 410 656 424 648 C414 560 396 470 376 390 C360 320 346 280 324 240 Z"/>
+    <path id="maskShape" d="M240 116 C224 116 214 128 214 146 C214 168 224 192 240 214 C256 192 266 168 266 146 C266 128 256 116 240 116 Z"/>
+    <clipPath id="maskClip"><use href="#maskShape"/></clipPath>
+
+    <!-- ===== Filters ===== -->
+    <filter id="inkfx" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" seed="4" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="5" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="furfx" x="-15%" y="-15%" width="130%" height="130%">
+      <feTurbulence type="turbulence" baseFrequency="0.12" numOctaves="2" seed="21" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="14" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="canvas" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.55" numOctaves="3" seed="12" result="n"/>
+      <feColorMatrix in="n" type="saturate" values="0" result="g"/>
+      <feComponentTransfer in="g" result="lift">
+        <feFuncR type="linear" slope="0.5" intercept="0.7"/>
+        <feFuncG type="linear" slope="0.5" intercept="0.7"/>
+        <feFuncB type="linear" slope="0.5" intercept="0.7"/>
+        <feFuncA type="linear" slope="0" intercept="1"/>
+      </feComponentTransfer>
+      <feBlend in="SourceGraphic" in2="lift" mode="multiply" result="t"/>
+      <feComposite in="t" in2="SourceGraphic" operator="in"/>
+    </filter>
+    <filter id="fog" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.008 0.03" numOctaves="4" seed="26"/>
+      <feColorMatrix values="0 0 0 0 0.95  0 0 0 0 0.97  0 0 0 0 1  0 0 0 1.6 -0.55"/>
+    </filter>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="3" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0" intercept="0.1"/></feComponentTransfer>
+    </filter>
+    <filter id="bloom" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="bloomBig" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="16"/>
+    </filter>
+    <filter id="dof" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur stdDeviation="3"/>
+    </filter>
+    <filter id="haze" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur stdDeviation="7"/>
+    </filter>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="4"/>
+    </filter>
+    <filter id="blurSnow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur stdDeviation="2"/>
+    </filter>
+  </defs>
+
+  <!-- ================= BACKGROUND: blizzard at a frozen waterfall ================= -->
+  <rect width="468" height="668" fill="url(#sky)"/>
+
+  <!-- icy cliffs on either side -->
+  <g filter="url(#dof)" opacity="0.75">
+    <path fill="#8ea4b6" d="M0 0 H74 L62 170 L84 310 L52 460 H0 Z"/>
+    <path fill="#9bb0c0" d="M468 0 H398 L410 150 L386 300 L418 450 H468 Z"/>
+  </g>
+
+  <!-- frozen waterfall: pale falls and blue crevices -->
+  <g filter="url(#haze)">
+    <path fill="#7f97ab" opacity="0.45" d="M112 0 H122 L116 400 H108 Z M300 0 H312 L318 380 H306 Z M362 0 H370 L372 320 H364 Z"/>
+    <path fill="#ffffff" opacity="0.7" d="M146 0 H172 L164 430 H142 Z M200 0 H216 L220 410 H206 Z M252 0 H276 L282 420 H258 Z M330 0 H350 L346 400 H330 Z"/>
+  </g>
+
+  <!-- driving wind streaks -->
+  <g stroke="#ffffff" stroke-width="1.4" opacity="0.45" filter="url(#blurSnow)">
+    <path d="M0 210 L140 176 M40 330 L200 292 M260 250 L468 200 M300 380 L468 340 M0 460 L120 432"/>
+  </g>
+
+  <!-- snowy ground -->
+  <path fill="url(#snowGround)" d="M0 560 Q120 546 234 558 Q350 544 468 560 V668 H0 Z"/>
+  <ellipse cx="240" cy="640" rx="190" ry="26" fill="#6f86a0" opacity="0.35" filter="url(#soft)"/>
+
+  <!-- far snow, behind him -->
+  <rect width="468" height="668" fill="url(#snowFar)" opacity="0.55" filter="url(#blurSnow)"/>
+
+  <!-- ================= ALFARR ================= -->
+
+  <!-- flowing cloak billowing behind him -->
+  <use href="#cloakShape" fill="url(#cloak)" filter="url(#canvas)"/>
+  <use href="#cloakShape" fill="url(#rimLight)"/>
+  <g fill="none" stroke-linecap="round">
+    <path d="M150 280 Q110 420 78 640 M190 300 Q170 460 150 650 M300 300 Q326 460 344 652 M330 290 Q370 430 404 640"
+          stroke="#0a0d13" stroke-width="3" opacity="0.5" filter="url(#soft)"/>
+    <path d="M156 284 Q118 420 88 630 M334 292 Q372 430 410 630"
+          stroke="#9fb4c8" stroke-width="1.2" opacity="0.35"/>
+  </g>
+
+  <!-- long robe -->
+  <use href="#robeShape" fill="url(#robe)" filter="url(#canvas)"/>
+  <use href="#robeShape" fill="url(#rimLight)"/>
+  <!-- ink fold strokes and rips -->
+  <g fill="none" stroke-linecap="round" filter="url(#inkfx)">
+    <path d="M200 400 Q196 520 186 660 M240 390 V660 M280 400 Q286 520 296 660 M170 440 Q160 540 146 660 M314 440 Q324 540 338 660"
+          stroke="#0b0f15" stroke-width="2.4" opacity="0.65"/>
+    <path d="M204 400 Q200 520 190 660 M284 400 Q290 520 300 660"
+          stroke="#8aa0b6" stroke-width="1" opacity="0.4"/>
+  </g>
+  <g fill="#0b0f15">
+    <path d="M216 520 l7 -12 l4 14 z M262 560 l5 -10 l6 12 z M190 600 l6 -9 l3 11 z M300 610 l6 -12 l4 13 z M236 470 l4 -8 l4 9 z"/>
+  </g>
+
+  <!-- cross-belt, belt, small skulls and bone charms -->
+  <path d="M188 280 L300 372" stroke="#16121a" stroke-width="7" stroke-linecap="round"/>
+  <path fill="#16121a" d="M150 356 Q240 372 330 356 L332 370 Q240 386 148 370 Z"/>
+  <g fill="url(#bone)">
+    <g transform="translate(262 304)">
+      <path d="M0 -8 C-6 -8 -8 -4 -8 0 C-8 3 -6 5 -4 6 V9 H4 V6 C6 5 8 3 8 0 C8 -4 6 -8 0 -8 Z"/>
+    </g>
+    <g transform="translate(212 372)">
+      <path d="M0 -8 C-6 -8 -8 -4 -8 0 C-8 3 -6 5 -4 6 V9 H4 V6 C6 5 8 3 8 0 C8 -4 6 -8 0 -8 Z"/>
+    </g>
+    <g transform="translate(274 374) scale(0.85)">
+      <path d="M0 -8 C-6 -8 -8 -4 -8 0 C-8 3 -6 5 -4 6 V9 H4 V6 C6 5 8 3 8 0 C8 -4 6 -8 0 -8 Z"/>
+    </g>
+    <rect x="178" y="372" width="4" height="22" rx="2"/>
+    <rect x="240" y="378" width="4" height="26" rx="2"/>
+    <rect x="300" y="372" width="4" height="18" rx="2"/>
+    <circle cx="242" cy="408" r="3.4"/>
+  </g>
+  <g fill="#0a0d13">
+    <circle cx="259" cy="304" r="1.8"/><circle cx="265" cy="304" r="1.8"/>
+    <circle cx="209" cy="372" r="1.8"/><circle cx="215" cy="372" r="1.8"/>
+    <circle cx="271.5" cy="374" r="1.5"/><circle cx="276.5" cy="374" r="1.5"/>
+  </g>
+
+  <!-- empty left sleeve, knotted -->
+  <path fill="url(#cloak)" filter="url(#inkfx)" d="M306 248 C322 262 332 290 334 322 L324 332 L318 320 L312 334 L306 318 C308 296 302 272 292 258 Z"/>
+  <circle cx="330" cy="326" r="5.5" fill="#1a2230"/>
+  <path d="M330 330 Q334 344 330 354 M332 330 Q340 342 340 352" fill="none" stroke="#9b6ff0" stroke-width="1.3" opacity="0.8"/>
+  <circle cx="330" cy="356" r="2.6" fill="#b9c8d8"/>
+
+  <!-- ===== Staff, held in his one arm ===== -->
+  <path d="M128 132 L123 668" stroke="url(#staff)" stroke-width="6.5" stroke-linecap="round"/>
+  <path d="M126.5 132 L121.5 668" stroke="#c9d6e2" stroke-width="1" opacity="0.5"/>
+  <g fill="#6a5244">
+    <rect x="122" y="200" width="10" height="16" rx="2"/>
+    <rect x="120" y="330" width="10" height="20" rx="2"/>
+  </g>
+  <path d="M123 420 L127 428 L123 436 M122 470 L126 478 L122 486" fill="none" stroke="#9b6ff0" stroke-width="1.2" opacity="0.7"/>
+
+  <!-- sleeve and gloved hand gripping the staff -->
+  <path fill="url(#cloak)" filter="url(#inkfx)" d="M178 250 C160 262 146 280 138 294 L150 306 C158 292 170 278 188 268 Z"/>
+  <path fill="url(#cloak)" filter="url(#inkfx)" d="M140 300 L128 334 L142 318 L140 348 L154 318 L156 306 Z"/>
+  <rect x="118" y="286" width="20" height="24" rx="5" fill="#1d222c"/>
+  <path d="M120 292 H136 M120 298 H136 M120 304 H136" stroke="#5d6a7c" stroke-width="1"/>
+
+  <!-- staff head: claw cage, rags and a bone charm -->
+  <g fill="url(#rag)" filter="url(#inkfx)" opacity="0.95">
+    <path d="M118 104 L82 118 L98 124 L66 142 L112 132 L94 152 L120 138 Z"/>
+    <path d="M124 150 L100 170 L112 170 L96 190 L124 164 Z"/>
+  </g>
+  <g fill="none" stroke="#2c3646" stroke-width="3.6" stroke-linecap="round">
+    <path d="M128 152 C114 140 110 120 118 98 C120 94 124 94 124 98"/>
+    <path d="M128 152 C142 140 146 120 138 98 C136 94 132 94 132 98"/>
+    <path d="M128 152 C124 132 126 112 130 94"/>
+  </g>
+  <path d="M146 150 L148 176" stroke="#2c3646" stroke-width="1"/>
+  <g transform="translate(148 180) scale(0.6)" fill="url(#bone)">
+    <path d="M0 -8 C-6 -8 -8 -4 -8 0 C-8 3 -6 5 -4 6 V9 H4 V6 C6 5 8 3 8 0 C8 -4 6 -8 0 -8 Z"/>
+  </g>
+
+  <!-- the glowing ice orb -->
+  <circle cx="130" cy="122" r="80" fill="#9b5ce6" opacity="0.22" filter="url(#bloomBig)"/>
+  <circle cx="130" cy="122" r="44" fill="#9fe0ff" opacity="0.6" filter="url(#bloomBig)"/>
+  <circle cx="130" cy="122" r="11" fill="#e6f8ff" filter="url(#bloom)"/>
+  <circle cx="130" cy="122" r="5" fill="#ffffff"/>
+  <g transform="translate(130 122)" fill="none" stroke="#e2f6ff" stroke-width="1.1" opacity="0.65" filter="url(#bloom)">
+    <ellipse rx="30" ry="9" transform="rotate(-20)"/>
+    <ellipse rx="24" ry="7" transform="rotate(34)"/>
+  </g>
+
+  <!-- ===== Frosted fur mantle ===== -->
+  <path fill="url(#frostFur)" filter="url(#furfx)"
+        d="M150 236 C160 206 196 196 216 210 L240 222 L264 210 C284 196 320 206 332 236 C340 262 318 280 296 276 C270 284 250 276 240 280 C230 276 208 284 184 276 C160 282 142 262 150 236 Z"/>
+  <g fill="none" stroke="#f4fcff" stroke-width="1.6" stroke-linecap="round" opacity="0.85" filter="url(#inkfx)">
+    <path d="M160 232 l-10 -8 M170 222 l-6 -12 M186 214 l-2 -12 M204 212 l2 -10 M276 212 l-2 -10 M294 214 l2 -12 M310 222 l6 -12 M320 232 l10 -8
+             M168 262 l-10 8 M190 272 l-4 10 M216 276 l0 10 M264 276 l0 10 M290 272 l4 10 M312 262 l10 8"/>
+  </g>
+
+  <!-- ===== Hood and antlered skull mask ===== -->
+  <path fill="#18202a" d="M240 104 C212 104 196 124 194 150 C192 180 200 206 214 222 L266 222 C280 206 288 180 286 150 C284 124 268 104 240 104 Z"/>
+
+  <!-- antlers: dark shadow, main tone, then a thin snow-lit edge -->
+  <g fill="none" stroke-linecap="round" filter="url(#inkfx)">
+    <g stroke="#1b1f28">
+      <path stroke-width="7.5" d="M228 124 C212 104 192 90 178 66 C170 52 168 38 174 24 M252 124 C268 104 288 90 302 66 C310 52 312 38 306 24"/>
+      <path stroke-width="4.8" d="M200 96 C186 90 168 92 154 84 M184 74 C176 60 162 54 150 42 M220 112 C206 110 196 116 186 112 M178 60 C186 48 196 42 200 30
+                                  M280 96 C294 90 312 92 326 84 M296 74 C304 60 318 54 330 42 M260 112 C274 110 284 116 294 112 M302 60 C294 48 284 42 280 30"/>
+    </g>
+    <g stroke="#5a6678">
+      <path stroke-width="4.5" d="M228 124 C212 104 192 90 178 66 C170 52 168 38 174 24 M252 124 C268 104 288 90 302 66 C310 52 312 38 306 24"/>
+      <path stroke-width="2.6" d="M200 96 C186 90 168 92 154 84 M184 74 C176 60 162 54 150 42 M220 112 C206 110 196 116 186 112 M178 60 C186 48 196 42 200 30
+                                  M280 96 C294 90 312 92 326 84 M296 74 C304 60 318 54 330 42 M260 112 C274 110 284 116 294 112 M302 60 C294 48 284 42 280 30"/>
+    </g>
+    <g stroke="#e4eef6" stroke-width="1" opacity="0.6" transform="translate(-0.8 -0.8)">
+      <path d="M228 124 C212 104 192 90 178 66 C170 52 168 38 174 24 M252 124 C268 104 288 90 302 66 C310 52 312 38 306 24"/>
+    </g>
+  </g>
+
+  <!-- the mask -->
+  <use href="#maskShape" fill="url(#mask)"/>
+  <g clip-path="url(#maskClip)">
+    <ellipse cx="220" cy="170" rx="10" ry="40" fill="#1a2230" opacity="0.4" filter="url(#soft)"/>
+    <path d="M226 120 Q240 114 254 120" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.6"/>
+  </g>
+  <!-- eye sockets, nasal void, cracks -->
+  <path fill="#05070b" d="M222 142 L234 146 L230 156 L220 152 Z M258 142 L246 146 L250 156 L260 152 Z"/>
+  <path fill="#05070b" d="M236 166 L240 160 L244 166 L242 184 L240 190 L238 184 Z"/>
+  <path d="M246 118 L243 128 L248 134 L245 140 M226 188 L230 196 M254 188 L250 196" fill="none" stroke="#3a4656" stroke-width="0.8"/>
+  <path d="M232 200 H248 M234 200 V204 M238 200 V205 M242 200 V205 M246 200 V204" stroke="#3a4656" stroke-width="0.8"/>
+  <!-- violet Duskmoor rune on the brow -->
+  <path d="M236 132 L240 124 L244 132 M240 124 V138" fill="none" stroke="#9b6ff0" stroke-width="1.4" stroke-linecap="round" filter="url(#bloom)"/>
+  <!-- glowing eyes -->
+  <g fill="#9fe0ff" opacity="0.8" filter="url(#bloomBig)">
+    <circle cx="228" cy="149" r="6"/><circle cx="252" cy="149" r="6"/>
+  </g>
+  <g fill="#e6f8ff" filter="url(#bloom)">
+    <circle cx="228" cy="149" r="2.2"/><circle cx="252" cy="149" r="2.2"/>
+  </g>
+
+  <!-- cold light from the orb falling on him -->
+  <rect width="468" height="668" fill="url(#orbGlow)" style="mix-blend-mode:screen"/>
+
+  <!-- ================= FOREGROUND ================= -->
+  <rect width="468" height="668" fill="url(#snowNear)" opacity="0.85"/>
+  <g mask="url(#mGround)" opacity="0.75">
+    <rect x="0" y="470" width="468" height="198" filter="url(#fog)"/>
+  </g>
+
+  <!-- grade, vignette, grain -->
+  <rect width="468" height="668" fill="#3a2a66" opacity="0.14" style="mix-blend-mode:soft-light"/>
+  <rect width="468" height="668" fill="url(#vignette)"/>
+  <rect width="468" height="668" filter="url(#grain)" style="mix-blend-mode:overlay"/>
+</svg>
