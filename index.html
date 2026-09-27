@@ -9,8 +9,16 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Grenze+Gotisch:wght@600;800&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Pirata+One&family=Uncial+Antiqua&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
+  <script src="js/smoke.js"></script>
 </head>
 <body>
+  <!-- Click-to-begin splash: lets the music start, shown once per visit -->
+  <button class="splash" id="splash" autofocus>
+    <span class="splash-title">Three Crowns</span>
+    <span class="splash-prompt">Click to begin</span>
+    <span class="splash-note">Best with sound on</span>
+  </button>
+
   <!-- The three kingdom backgrounds -->
   <div class="realms">
     <div class="realm" data-kingdom="dark"><div class="realm-bg"></div></div>
@@ -355,13 +363,12 @@
 
   <!-- Secondary menu (top-right, appears with the rest of the UI) -->
   <nav class="corner-menu" aria-label="Main menu">
-    <a class="corner-btn" href="cards.html">Card library</a>
     <button class="corner-btn">Settings</button>
   </nav>
 
   <footer class="credit">© 2026 Erik Porter. All rights reserved.</footer>
 
-  <script src="js/smoke.js"></script>
+  <script src="js/audio.js"></script>
   <script src="js/title.js"></script>
 </body>
 </html>
